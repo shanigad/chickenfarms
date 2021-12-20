@@ -7,7 +7,9 @@ import com.chickenfarms.escalationmanagement.repository.CustomerInTicketReposito
 import com.chickenfarms.escalationmanagement.repository.TicketManagerRepository;
 import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class TicketManagerService {
 
   @Autowired
@@ -16,7 +18,6 @@ public class TicketManagerService {
   @Autowired
   CustomerInTicketRepository customerInTicketRepository;
 
-  @Autowired
   public TicketManagerService() {
   }
 
