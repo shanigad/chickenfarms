@@ -1,11 +1,10 @@
 package com.chickenfarms.escalationmanagement.rest.service;
 
 import com.chickenfarms.escalationmanagement.model.dto.CreatedTicketRequest;
-import com.chickenfarms.escalationmanagement.model.entity.CustomerInTicket;
+import com.chickenfarms.escalationmanagement.model.entity.Problem;
 import com.chickenfarms.escalationmanagement.model.entity.Ticket;
-import com.chickenfarms.escalationmanagement.repository.CustomerInTicketRepository;
-import com.chickenfarms.escalationmanagement.repository.TicketManagerRepository;
-import java.util.Date;
+import com.chickenfarms.escalationmanagement.repository.ProblemRepository;
+import com.chickenfarms.escalationmanagement.repository.TicketRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,34 +12,39 @@ import org.springframework.stereotype.Service;
 public class TicketManagerService {
 
   @Autowired
-  TicketManagerRepository ticketManagerRepository;
+  TicketRepository ticketRepository;
 
   @Autowired
-  CustomerInTicketRepository customerInTicketRepository;
+  CustomerService customerService;
 
-  public TicketManagerService() {
-  }
+  @Autowired
+  ProblemRepository problemRepository;
 
 
   public Long submitTicket(CreatedTicketRequest createdTicket){
-    Ticket ticket = createTicket(createdTicket);
-    attachCustomersToTicket(createdTicket.getCustomers(), ticket.getId(), ticket.getCreatedDate());
-
-      return ticket.getId();
+    Problem problem = problemRepository.getById(createdTicket.getProblem());
+    // TODO check if ticket with problem+Customer+provider +description? exist before creation
+    Ticket ticket = createTicket(createdTicket, problem);
+    customerService.attachCustomersToTicket(createdTicket.getCustomers(), ticket, ticket.getCreatedDate());
+    return ticket.getId();
   }
 
-  private void attachCustomersToTicket(Long[] customers, long ticketId, Date createdDate) {
-    CustomerInTicket customerInTicket;
-    for (Long c: customers) {
-      customerInTicket = new CustomerInTicket(c, ticketId, createdDate);
-      customerInTicketRepository.save(customerInTicket);
+  public Ticket getTicket(Long id){
+    return ticketRepository.getById(id);
+  }
+
+
+  private Ticket createTicket(CreatedTicketRequest createdTicket, Problem problem) {
+    Ticket ticket = new Ticket(createdTicket, problem);
+    ticket = ticketRepository.save(ticket);
+    ticketRepository.flush();
+    return ticket;
+  }
+
+  public void closeTicket(Long id){
+    if (ticketRepository.existsById(id)) {
+
     }
   }
 
-  private Ticket createTicket(CreatedTicketRequest createdTicket) {
-    Ticket ticket = new Ticket(createdTicket);
-    ticket = ticketManagerRepository.save(ticket);
-    ticketManagerRepository.flush();
-    return ticket;
-  }
 }

@@ -4,8 +4,9 @@ import lombok.Data;
 
 @Data
 public class CreatedTicketRequest{
+  private String provider;
   private String description;
-  private String problem;
+  private int problem;
   private String createdBy;
   private Long[] customers;
 }
