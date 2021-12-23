@@ -1,6 +1,7 @@
 package com.chickenfarms.escalationmanagement.rest.service;
 
-import com.chickenfarms.escalationmanagement.model.dto.CreatedTicketRequest;
+import com.chickenfarms.escalationmanagement.exception.ResourceNotFoundException;
+import com.chickenfarms.escalationmanagement.model.dto.TicketCreationRequest;
 import com.chickenfarms.escalationmanagement.model.entity.Problem;
 import com.chickenfarms.escalationmanagement.model.entity.Ticket;
 import com.chickenfarms.escalationmanagement.repository.ProblemRepository;
@@ -21,8 +22,9 @@ public class TicketManagerService {
   ProblemRepository problemRepository;
 
 
-  public Long submitTicket(CreatedTicketRequest createdTicket){
-    Problem problem = problemRepository.getById(createdTicket.getProblem());
+  public Long submitTicket(TicketCreationRequest createdTicket){
+    Problem problem = problemRepository.findById(createdTicket.getProblem()).
+        orElseThrow(()-> new ResourceNotFoundException("Problem", "id", String.valueOf(createdTicket.getProblem())));
     // TODO check if ticket with problem+Customer+provider +description? exist before creation
     Ticket ticket = createTicket(createdTicket, problem);
     customerService.attachCustomersToTicket(createdTicket.getCustomers(), ticket, ticket.getCreatedDate());
@@ -34,7 +36,7 @@ public class TicketManagerService {
   }
 
 
-  private Ticket createTicket(CreatedTicketRequest createdTicket, Problem problem) {
+  private Ticket createTicket(TicketCreationRequest createdTicket, Problem problem) {
     Ticket ticket = new Ticket(createdTicket, problem);
     ticket = ticketRepository.save(ticket);
     ticketRepository.flush();

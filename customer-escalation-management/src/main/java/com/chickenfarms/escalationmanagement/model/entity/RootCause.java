@@ -11,20 +11,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.Data;
 
-import java.util.Set;
-    import javax.persistence.CascadeType;
-    import javax.persistence.Column;
-    import javax.persistence.Entity;
-    import javax.persistence.FetchType;
-    import javax.persistence.Id;
-    import javax.persistence.JoinColumn;
-    import javax.persistence.JoinTable;
-    import javax.persistence.ManyToMany;
-    import javax.persistence.Table;
-    import lombok.Data;
 
 @Data
 @Entity
@@ -33,12 +24,16 @@ public class RootCause {
   @Id
   @GeneratedValue(strategy= GenerationType.AUTO)
   @Column(name = "rc_id", nullable = false)
-  private Long id;
+  private int id;
   @Column(name = "name", nullable = false)
   private String name;
-  @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-  @JoinTable(name = "RC_FOR_TICKETS",
-      joinColumns = { @JoinColumn(name="rc_id")},
-      inverseJoinColumns={@JoinColumn(name = "ticket_id")})
-  private Set<Ticket> tickets;
+
+  public RootCause( int id, String name){
+    this.id = id;
+    this.name = name;
+  }
+
+  public RootCause() {
+
+  }
 }

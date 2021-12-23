@@ -1,7 +1,7 @@
 package com.chickenfarms.escalationmanagement.model.entity;
 
 import com.chickenfarms.escalationmanagement.enums.Status;
-import com.chickenfarms.escalationmanagement.model.dto.CreatedTicketRequest;
+import com.chickenfarms.escalationmanagement.model.dto.TicketCreationRequest;
 import java.util.Date;
 import java.util.Set;
 import javax.persistence.CascadeType;
@@ -31,8 +31,6 @@ public class Ticket {
   private String description;
   @Column(name = "provider_id")
   private String provider;
-//  @Column(name = "problem")
-//  private String problem;
   @Column(name = "created_by")
   private String createdBy;
   @Column(name = "created_date")
@@ -51,9 +49,12 @@ public class Ticket {
   @ManyToOne
   @JoinColumn(name="id", nullable=false)
   private Problem problem;
+  @ManyToOne
+  @JoinColumn(name="rc_id")
+  private RootCause rootCause;
 
 
-  public Ticket(CreatedTicketRequest createdTicket,   Problem problem){
+  public Ticket(TicketCreationRequest createdTicket, Problem problem){
     description = createdTicket.getDescription();
     createdBy = createdTicket.getCreatedBy();
     provider = createdTicket.getProvider();
