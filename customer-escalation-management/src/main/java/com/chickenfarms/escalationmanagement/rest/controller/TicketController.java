@@ -2,7 +2,9 @@ package com.chickenfarms.escalationmanagement.rest.controller;
 
 import com.chickenfarms.escalationmanagement.model.dto.TicketCreationRequest;
 import com.chickenfarms.escalationmanagement.model.entity.Ticket;
+import com.chickenfarms.escalationmanagement.rest.service.CustomerService;
 import com.chickenfarms.escalationmanagement.rest.service.TicketManagerService;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,10 +23,18 @@ public class TicketController {
   @Autowired
   private TicketManagerService ticketManagerService;
 
+  @Autowired
+  CustomerService customerService;
 
   @GetMapping("/ticket/{id}")
   public Ticket getTicket(@PathVariable Long id){
     return ticketManagerService.getTicket(id);
+  }
+
+  @GetMapping("/ticket/customers/{id}")
+  public List<Long> getCustomersByTicketTicket(@PathVariable Long id){
+    Ticket ticket = getTicket(id);
+    return customerService.getCustomersByTicket(ticket);
   }
 
   @PostMapping("/ticket")
