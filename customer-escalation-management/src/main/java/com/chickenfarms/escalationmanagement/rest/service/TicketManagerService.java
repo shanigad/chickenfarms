@@ -1,5 +1,6 @@
 package com.chickenfarms.escalationmanagement.rest.service;
 
+import com.chickenfarms.escalationmanagement.exception.ResourceAlreadyExistException;
 import com.chickenfarms.escalationmanagement.exception.ResourceNotFoundException;
 import com.chickenfarms.escalationmanagement.model.dto.TicketCreationRequest;
 import com.chickenfarms.escalationmanagement.model.entity.Problem;
@@ -25,10 +26,18 @@ public class TicketManagerService {
   public Long submitTicket(TicketCreationRequest createdTicket){
     Problem problem = problemRepository.findById(createdTicket.getProblem()).
         orElseThrow(()-> new ResourceNotFoundException("Problem", "id", String.valueOf(createdTicket.getProblem())));
-    // TODO check if ticket with problem+Customer+provider +description? exist before creation
+    handleDuplicateTicket(createdTicket, problem);
     Ticket ticket = createTicket(createdTicket, problem);
     customerService.attachCustomersToTicket(createdTicket.getCustomers(), ticket, ticket.getCreatedDate());
     return ticket.getId();
+  }
+
+  private void handleDuplicateTicket(TicketCreationRequest createdTicket, Problem problem) {
+    //TODO - Add customers to validation
+    //TODO - Does this should be handled as exception
+    Ticket t = ticketRepository.findTicketByProblemAndProviderAndCreatedBy(problem, createdTicket.getProvider(), createdTicket.getCreatedBy());
+    if(t != null)
+      throw new ResourceAlreadyExistException("Ticket",  String.valueOf(t.getId()));
   }
 
   public Ticket getTicket(Long id){
