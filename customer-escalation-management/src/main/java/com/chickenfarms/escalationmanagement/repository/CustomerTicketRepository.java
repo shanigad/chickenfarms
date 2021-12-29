@@ -8,8 +8,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
   public interface CustomerTicketRepository extends JpaRepository<CustomerTicket, Integer> {
-  List<CustomerTicket> findCustomerTicketByCustomerTicketKey_Ticket(Ticket ticket);
-  List<CustomerTicket> findCustomerTicketByCustomerTicketKey_CustomerId(Long customerId);
-  List<CustomerTicket> findCustomerTicketByCustomerTicketKey_TicketAndCustomerTicketKey_CustomerId(Ticket ticket, Long customerId);
+  List<CustomerTicket> findCustomerTicketByTicket(Ticket ticket);
+  List<CustomerTicket> findCustomerTicketByCustomerId(Long customerId);
+  List<CustomerTicket> findCustomerTicketByTicketAndCustomerId(Ticket ticket, Long customerId);
 
 }

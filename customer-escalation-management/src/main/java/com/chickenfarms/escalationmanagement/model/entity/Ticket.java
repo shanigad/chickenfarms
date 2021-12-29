@@ -2,7 +2,10 @@ package com.chickenfarms.escalationmanagement.model.entity;
 
 import com.chickenfarms.escalationmanagement.enums.Status;
 import com.chickenfarms.escalationmanagement.model.dto.TicketCreationRequest;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -14,6 +17,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
@@ -21,11 +25,12 @@ import org.springframework.data.annotation.CreatedDate;
 @Data
 @Entity
 @Table(name="ticket")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Ticket {
 
   @Id
   @GeneratedValue(strategy= GenerationType.AUTO)
-  @Column(name = "ticket_id")
+  @Column(name = "ticket_id", unique = true, nullable = false)
   private long id;
   @Column(name = "description")
   private String description;
@@ -39,13 +44,14 @@ public class Ticket {
   @Column(name = "last_modified_date")
   private Date lastModifiedDate;
   @Column(name = "status")
-  private Status status;
+  private String status;
   @Column(name = "closed_date")
   private Date closedDate;
   @Column(name = "is_resolved")
   private boolean isResolved;
   @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "tickets")
-  private Set<Tag> tags;
+  @JsonIgnoreProperties(value = {"applications", "hibernateLazyInitializer"})
+  private List<Tag> tags;
   @ManyToOne
   @JoinColumn(name="id", nullable=false)
   private Problem problem;
@@ -53,13 +59,18 @@ public class Ticket {
   @JoinColumn(name="rc_id")
   private RootCause rootCause;
 
+  @OneToMany(mappedBy = "customerId",
+      cascade = CascadeType.ALL,
+      orphanRemoval = true)
+  private List<CustomerTicket> customers;
+
 
   public Ticket(TicketCreationRequest createdTicket, Problem problem){
     description = createdTicket.getDescription();
     createdBy = createdTicket.getCreatedBy();
     provider = createdTicket.getProvider();
     this.problem = problem;
-    status = Status.CREATED;
+    status = Status.CREATED.getStatus();
     createdDate = new Date();
     lastModifiedDate = createdDate;
     isResolved = false;
