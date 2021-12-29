@@ -1,7 +1,7 @@
 package com.chickenfarms.escalationmanagement.rest.service;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
@@ -11,25 +11,33 @@ import com.chickenfarms.escalationmanagement.repository.ProblemRepository;
 import com.chickenfarms.escalationmanagement.repository.TicketRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-
+@ExtendWith(MockitoExtension.class)
 public class TicketManagerServiceTest {
- private TicketRepository ticketRepository = Mockito.mock(TicketRepository.class);
- private CustomerService customerService = Mockito.mock(CustomerService.class);
- private ProblemRepository problemRepository = Mockito.mock(ProblemRepository.class);
+ @Mock
+ private TicketRepository ticketRepository;
+ @Mock
+ private CustomerService customerService;
+ @Mock
+ private ProblemRepository problemRepository;
+ @InjectMocks
  private TicketManagerService ticketManagerService;
 
 
  @BeforeEach
  public void initTicketManager(){
-   ticketManagerService = new TicketManagerService(ticketRepository, customerService, problemRepository);
  }
 
  @Test
  public void getTicketIfExistResourceNotFoundTest(){
    when(ticketRepository.existsById(anyLong())).thenReturn(false);
-   assertThrows(ResourceNotFoundException.class, ()->{ticketManagerService.getTicketIfExist(1L);});
+   assertThatExceptionOfType(ResourceNotFoundException.class).isThrownBy(() ->{
+        ticketManagerService.getTicketIfExist(1L);
+       });
  }
 
   @Test
@@ -38,7 +46,7 @@ public class TicketManagerServiceTest {
    ticket.setId(1L);
     when(ticketRepository.existsById(anyLong())).thenReturn(true);
     when(ticketRepository.getById(anyLong())).thenReturn(ticket);
-    assertTrue(ticketManagerService.getTicketIfExist(1L).equals(ticket));
+    assertThat(ticketManagerService.getTicketIfExist(1L)).isEqualTo(ticket);
   }
 
 }
