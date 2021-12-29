@@ -1,17 +1,17 @@
 package com.chickenfarms.escalationmanagement.enums;
 
 public enum Status {
-  CREATED(1),
-  READY(2),
-  CLOSED(3),
-  RECONCILED(4);
+  CREATED("Created"),
+  READY("Ready"),
+  CLOSED("Closed"),
+  RECONCILED("Reconciled");
 
 
-  private int status;
-  Status(int status) {
+  private String status;
+  Status(String status) {
     this.status=status;
   }
-  public int getStatus() {
+  public String getStatus() {
     return status;
   }
 }
