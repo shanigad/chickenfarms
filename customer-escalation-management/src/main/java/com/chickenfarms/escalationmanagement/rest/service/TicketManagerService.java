@@ -1,36 +1,22 @@
 package com.chickenfarms.escalationmanagement.rest.service;
 
-import com.chickenfarms.escalationmanagement.enums.Status;
 import com.chickenfarms.escalationmanagement.exception.ResourceAlreadyExistException;
 import com.chickenfarms.escalationmanagement.exception.ResourceNotFoundException;
-import com.chickenfarms.escalationmanagement.model.dto.CloseTicketRequest;
 import com.chickenfarms.escalationmanagement.model.dto.TicketCreationRequest;
 import com.chickenfarms.escalationmanagement.model.entity.Problem;
 import com.chickenfarms.escalationmanagement.model.entity.Ticket;
 import com.chickenfarms.escalationmanagement.repository.ProblemRepository;
 import com.chickenfarms.escalationmanagement.repository.TicketRepository;
-import javax.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class TicketManagerService {
 
-  TicketRepository ticketRepository;
-
-  CustomerService customerService;
-
-  ProblemRepository problemRepository;
-
-  @Autowired
-  public TicketManagerService(
-      TicketRepository ticketRepository,
-      CustomerService customerService,
-      ProblemRepository problemRepository) {
-    this.ticketRepository = ticketRepository;
-    this.customerService = customerService;
-    this.problemRepository = problemRepository;
-  }
+  private final TicketRepository ticketRepository;
+  private final CustomerService customerService;
+  private final ProblemRepository problemRepository;
 
   public Long submitTicket(TicketCreationRequest createdTicket){
     Problem problem = problemRepository.findById(createdTicket.getProblem()).
