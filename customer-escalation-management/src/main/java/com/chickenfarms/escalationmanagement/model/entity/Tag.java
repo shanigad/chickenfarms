@@ -1,6 +1,7 @@
 package com.chickenfarms.escalationmanagement.model.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -29,5 +30,6 @@ public class Tag {
   @JoinTable(name = "TAGS_IN_TICKETS",
       joinColumns = { @JoinColumn(name="tag_id")},
       inverseJoinColumns={@JoinColumn(name = "ticket_id")})
+  @JsonIgnoreProperties(value = {"applications", "hibernateLazyInitializer"})
   private Set<Ticket> tickets;
 }

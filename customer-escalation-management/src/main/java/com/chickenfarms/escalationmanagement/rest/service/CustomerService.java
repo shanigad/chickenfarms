@@ -1,5 +1,6 @@
 package com.chickenfarms.escalationmanagement.rest.service;
 
+import com.chickenfarms.escalationmanagement.exception.ResourceNotFoundException;
 import com.chickenfarms.escalationmanagement.model.entity.CustomerTicket;
 import com.chickenfarms.escalationmanagement.model.entity.Ticket;
 import com.chickenfarms.escalationmanagement.repository.CustomerTicketRepository;
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class CustomerService {
 
-  CustomerTicketRepository customerTicketRepository;
+  private final CustomerTicketRepository customerTicketRepository;
 
   public CustomerService(
       CustomerTicketRepository customerTicketRepository) {
@@ -21,6 +22,7 @@ public class CustomerService {
   public void attachCustomersToTicket(Long[] customers, Ticket ticket, Date createdDate) {
     CustomerTicket customerTicket;
     for (Long c: customers) {
+//      if(c.equals(123L)) throw new ResourceNotFoundException("Ticket", "id", "Test");
       customerTicket = new CustomerTicket(c, ticket, createdDate);
       customerTicketRepository.save(customerTicket);
     }

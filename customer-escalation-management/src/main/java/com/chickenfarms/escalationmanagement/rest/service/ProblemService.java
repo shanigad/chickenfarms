@@ -7,8 +7,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class ProblemService {
 
-  @Autowired
   ProblemRepository problemRepository;
 
-//  public getPro
+  public ProblemService(
+      ProblemRepository problemRepository) {
+    this.problemRepository = problemRepository;
+  }
+
 }
