@@ -37,13 +37,7 @@ public class TicketControllerTest {
   private CustomerService customerService;
   @InjectMocks
   private TicketController ticketController;
-//  private TicketCreationRequest createdTicket;
 
-//  @BeforeAll
-//  public void initParameters(){
-//    Long[] customers = {125L};
-//    createdTicket = new TicketCreationRequest("provider", "description", 101, "createdBy", customers);
-//  }
 
   @Test
   public void whenValidUrlAndMethodAndContentTypeAndInput_thenReturns201() throws Exception {
@@ -56,7 +50,7 @@ public class TicketControllerTest {
   }
 
   @Test
-  void whenNullValue_thenReturns400() throws Exception {
+  void whenEmptyValues_thenReturns400() throws Exception {
    Long[] customers = {};
    TicketCreationRequest createdTicket = new TicketCreationRequest("", "", 101, "", customers);
 
