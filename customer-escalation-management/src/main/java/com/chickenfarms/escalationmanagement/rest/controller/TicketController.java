@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -48,11 +49,10 @@ public class TicketController {
 //    return "Success";
 //  }
 //
-//  @PutMapping("/ticket/{id}/ready")
-//  public String updateTicketToReady(@PathVariable Long id){
-//    ticketManagerService.moveTicketToReady(id);
-//    return "Success";
-//  }
+  @PutMapping("/ticket/{ticketId}/ready/{rootCauseId}")
+  public Long updateTicketToReady(@PathVariable Long ticketId, @PathVariable int rootCauseId){
+    return ticketManagerService.moveTicketToReady(ticketId, rootCauseId);
+  }
 //
 //  @PutMapping("/ticket/{id}/close")
 //  public String closeTicket(@PathVariable Long id, @Valid @RequestBody CloseTicketRequest payload){

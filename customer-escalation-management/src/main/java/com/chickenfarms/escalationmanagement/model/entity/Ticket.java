@@ -51,7 +51,7 @@ public class Ticket {
   private boolean isResolved;
   @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "tickets")
   @JsonIgnoreProperties(value = {"applications", "hibernateLazyInitializer"})
-  private List<Tag> tags;
+  private Set<Tag> tags;
   @ManyToOne
   @JoinColumn(name="id", nullable=false)
   private Problem problem;
@@ -62,7 +62,7 @@ public class Ticket {
   @OneToMany(mappedBy = "customerId",
       cascade = CascadeType.ALL,
       orphanRemoval = true)
-  private List<CustomerTicket> customers;
+  private Set<CustomerTicket> customers;
 
 
   public Ticket(TicketCreationRequest createdTicket, Problem problem){
@@ -80,4 +80,35 @@ public class Ticket {
   public Ticket() {
 
   }
+
+  public void setTags(Set<Tag> tags) {
+    this.tags = new HashSet<>();
+    tags.stream().forEach(tag -> this.tags.add(tag));
+  }
+
+  public void setCustomers(Set<CustomerTicket> customers) {
+    this.customers = new HashSet<>();
+    customers.stream().forEach(c -> this.customers.add(c));
+  }
+
+  public void addTag(Tag tag){
+    tags.add(tag);
+  }
+
+   public void addTags(Set<Tag> tags){
+    this.tags.addAll(tags);
+  }
+
+  public void addCustomer(CustomerTicket customer){
+    customers.add(customer);
+  }
+
+   public void addCustomers(Set<CustomerTicket> customers){
+    this.customers.addAll(customers);
+  }
+
+
+
+
+
 }
