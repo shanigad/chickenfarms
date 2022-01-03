@@ -48,4 +48,13 @@ public class GlobalExceptionHandler {
     return new ResponseEntity<>(errorDetails, HttpStatus.CONFLICT);
   }
 
+  @ExceptionHandler(ChangeStatusException.class)
+  public ResponseEntity<ErrorDetails> handleChangeStatusException(ChangeStatusException exception,  WebRequest webRequest){
+
+    ErrorDetails errorDetails = new ErrorDetails(new Date(), exception.getMessage(),
+        webRequest.getDescription(false));
+
+    return new ResponseEntity<>(errorDetails, HttpStatus.CONFLICT);
+  }
+
 }
