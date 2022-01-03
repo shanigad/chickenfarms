@@ -82,7 +82,7 @@ public class TicketManagerService {
     }
 
   }
-  Long getReadyTicket(Ticket ticket, int rootCauseId) {
+  private Long getReadyTicket(Ticket ticket, int rootCauseId) {
     RootCause rootCause  = rootCauseRepository.findById(rootCauseId).
         orElseThrow(()-> new ResourceNotFoundException("RootCause", "id", String.valueOf(rootCauseId)));
     Optional<Ticket> readyTicket = ticketRepository.findTicketByProviderAndRootCause(ticket.getProvider(), rootCause);
