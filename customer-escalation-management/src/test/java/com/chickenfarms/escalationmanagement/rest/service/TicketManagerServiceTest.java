@@ -4,11 +4,15 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import com.chickenfarms.escalationmanagement.enums.Status;
 import com.chickenfarms.escalationmanagement.exception.ChangeStatusException;
+import com.chickenfarms.escalationmanagement.exception.ResourceAlreadyExistException;
 import com.chickenfarms.escalationmanagement.exception.ResourceNotFoundException;
+import com.chickenfarms.escalationmanagement.model.dto.TicketCreationRequest;
+import com.chickenfarms.escalationmanagement.model.entity.Problem;
 import com.chickenfarms.escalationmanagement.model.entity.RootCause;
 import com.chickenfarms.escalationmanagement.model.entity.Ticket;
 import com.chickenfarms.escalationmanagement.repository.ProblemRepository;
@@ -17,6 +21,7 @@ import com.chickenfarms.escalationmanagement.repository.TicketRepository;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -35,6 +40,8 @@ public class TicketManagerServiceTest {
   private TicketManagerService ticketManagerService;
 
 
+
+
   @Test
   public void getTicketIfExistResourceNotFoundTest(){
     when(ticketRepository.findById(anyLong())).thenReturn(Optional.empty());
@@ -51,6 +58,28 @@ public class TicketManagerServiceTest {
     assertThat(ticketManagerService.getTicketIfExist(1L)).isEqualTo(ticket);
   }
 
+
+  @Test
+  public void SubmitTicketProblemNotFoundTest(){
+    Long[] customers = {125L};
+    TicketCreationRequest createdTicket = new TicketCreationRequest("provider", "description", 0, "createdBy", customers);
+    when(problemRepository.findById(anyInt())).thenReturn(Optional.empty());
+    assertThatExceptionOfType(ResourceNotFoundException.class).isThrownBy(() ->{
+      ticketManagerService.submitTicket(createdTicket);
+    });
+  }
+
+  @Test
+  public void SubmitTicketDuplicateTest(){
+    Long[] customers = {125L};
+    TicketCreationRequest createdTicket = new TicketCreationRequest("provider", "description", 0, "createdBy", customers);
+    when(problemRepository.findById(anyInt())).thenReturn(Optional.of(new Problem()));
+    when(ticketRepository.findTicketByProblemAndProviderAndCreatedBy(ArgumentMatchers.any(Problem.class), anyString(), anyString()))
+        .thenReturn(new Ticket());
+    assertThatExceptionOfType(ResourceAlreadyExistException.class).isThrownBy(() ->{
+      ticketManagerService.submitTicket(createdTicket);
+    });
+  }
 
   @Test
   public void moveToReadyRootCauseNotFoundTest(){
