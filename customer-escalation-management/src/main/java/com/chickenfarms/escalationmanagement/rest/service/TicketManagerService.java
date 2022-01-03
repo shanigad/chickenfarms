@@ -44,9 +44,9 @@ public class TicketManagerService {
   private void handleDuplicateTicket(TicketCreationRequest createdTicket, Problem problem) {
     //TODO - Add customers to validation
     //TODO - Does this should be handled as exception
-    Ticket t = ticketRepository.findTicketByProblemAndProviderAndCreatedBy(problem, createdTicket.getProvider(), createdTicket.getCreatedBy());
-    if(t != null)
-      throw new ResourceAlreadyExistException("Ticket",  String.valueOf(t.getId()));
+    Ticket ticket = ticketRepository.findTicketByProblemAndProviderAndCreatedBy(problem, createdTicket.getProvider(), createdTicket.getCreatedBy());
+    if(ticket != null)
+      throw new ResourceAlreadyExistException("Ticket",  ticket.getId());
   }
 
   public Ticket getTicketIfExist(Long id){

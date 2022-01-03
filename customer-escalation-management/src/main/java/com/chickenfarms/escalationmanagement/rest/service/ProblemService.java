@@ -30,7 +30,7 @@ public class ProblemService {
   private void handleDuplicateProblem(String name) {
     Optional<Problem> problem =  problemRepository.findProblemByName(name);
     if(problem.isPresent()) {
-      throw new ResourceAlreadyExistException("Problem",  String.valueOf(problem.get().getId()));
+      throw new ResourceAlreadyExistException("Problem",  Long.valueOf(problem.get().getId()));
     }
   }
 

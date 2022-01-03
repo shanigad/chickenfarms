@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus( value = HttpStatus.CONFLICT)
 public class ResourceAlreadyExistException extends RuntimeException{
   private String resourceName;
-  private String resourceId;
+  private Long resourceId;
 
 
-  public ResourceAlreadyExistException(String resourceName, String id) {
+  public ResourceAlreadyExistException(String resourceName, Long id) {
     super(String.format("%s already exist with id: '%s'", resourceName, id));
     this.resourceName = resourceName;
     this.resourceId = id;
