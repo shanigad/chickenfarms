@@ -4,6 +4,7 @@ import com.chickenfarms.escalationmanagement.exception.ResourceAlreadyExistExcep
 import com.chickenfarms.escalationmanagement.model.dto.BORequest;
 import com.chickenfarms.escalationmanagement.model.entity.Problem;
 import com.chickenfarms.escalationmanagement.repository.ProblemRepository;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -32,6 +33,10 @@ public class ProblemService {
     if(problem.isPresent()) {
       throw new ResourceAlreadyExistException("Problem",  Long.valueOf(problem.get().getId()));
     }
+  }
+
+  public List<Problem> getProblems(){
+   return problemRepository.findAll();
   }
 
 
