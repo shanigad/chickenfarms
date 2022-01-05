@@ -5,16 +5,12 @@ import com.chickenfarms.escalationmanagement.exception.ChangeStatusException;
 import com.chickenfarms.escalationmanagement.exception.ResourceAlreadyExistException;
 import com.chickenfarms.escalationmanagement.exception.ResourceNotFoundException;
 import com.chickenfarms.escalationmanagement.model.dto.CloseTicketRequest;
-import com.chickenfarms.escalationmanagement.model.dto.PostCommentRequest;
 import com.chickenfarms.escalationmanagement.model.dto.TicketCreationRequest;
 import com.chickenfarms.escalationmanagement.model.dto.TicketUpdateRequest;
-import com.chickenfarms.escalationmanagement.model.entity.Comment;
 import com.chickenfarms.escalationmanagement.model.entity.Problem;
 import com.chickenfarms.escalationmanagement.model.entity.RootCause;
 import com.chickenfarms.escalationmanagement.model.entity.Tag;
 import com.chickenfarms.escalationmanagement.model.entity.Ticket;
-import com.chickenfarms.escalationmanagement.repository.ProblemRepository;
-import com.chickenfarms.escalationmanagement.repository.RootCauseRepository;
 import com.chickenfarms.escalationmanagement.repository.TicketRepository;
 import java.util.Date;
 import java.util.Optional;
@@ -64,7 +60,7 @@ public class TicketService {
     return saveToRepository(ticket);
   }
 
-  public Long moveTicketToReady(Long ticketId, Long rootCauseId){
+  public Ticket moveTicketToReady(Long ticketId, Long rootCauseId){
     Ticket ticket = getTicketIfExist(ticketId);
     if(Status.CREATED.getStatus().equals(ticket.getStatus())){
       return getReadyTicket(ticket, rootCauseId);
@@ -97,9 +93,9 @@ public class TicketService {
     Ticket splitTicket = new Ticket(ticket);
     // create ticket and move customers from old one
     saveToRepository(splitTicket);
-    Long newId = moveTicketToReady(splitTicket.getId(), rootCause.getId());
+    splitTicket = moveTicketToReady(splitTicket.getId(), rootCause.getId());
     // set SLA to earliest Customer’s SLA from the original Ticket
-    return getTicketIfExist(newId);
+    return splitTicket;
   }
 
 
@@ -112,7 +108,7 @@ public class TicketService {
   @Transactional
   long saveTicketAndCustomers(TicketCreationRequest createdTicket, Problem problem) {
     Ticket ticket = createTicket(createdTicket, problem);
-    customerService.attachCustomersToTicket(createdTicket.getCustomers(), ticket, ticket.getCreatedDate());
+    customerService.attachCustomersToTicket(createdTicket.getCustomers(), ticket, ticket.getCreationDate());
     return ticket.getId();
   }
 
@@ -138,12 +134,12 @@ public class TicketService {
     return ticket;
   }
 
-  private Long getReadyTicket(Ticket ticket, Long rootCauseId) {
+  private Ticket getReadyTicket(Ticket ticket, Long rootCauseId) {
     RootCause rootCause = rootCauseService.getRootCauseIfExist(rootCauseId);
     Optional<Ticket> readyTicket = ticketRepository.findTicketByProviderAndRootCause(ticket.getProvider(), rootCause);
     if(readyTicket.isPresent()){
       reconcileTickets(ticket, readyTicket.get());
-      return readyTicket.get().getId();
+      return readyTicket.get();
     }
     return updateTicketStatusToReady(ticket, rootCause);
   }
@@ -159,10 +155,10 @@ public class TicketService {
     saveReconciledTickets(ticket, readyTicket);
   }
 
-  private Long updateTicketStatusToReady(Ticket ticket, RootCause rootCause) {
+  private Ticket updateTicketStatusToReady(Ticket ticket, RootCause rootCause) {
     ticket.setStatus(Status.READY.getStatus());
     ticket.setRootCause(rootCause);
-    return saveToRepository(ticket).getId();
+    return saveToRepository(ticket);
   }
 
 

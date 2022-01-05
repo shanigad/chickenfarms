@@ -16,7 +16,7 @@ public class TicketResponse {
   private String description;
   private String provider;
   private String createdBy;
-  private Date createdDate;
+//  private Date creationDate;
   private Date lastModifiedDate;
   private String status;
   private String problem;
@@ -32,7 +32,7 @@ public class TicketResponse {
     this.description = ticket.getDescription();
     this.provider = ticket.getProvider();
     this.createdBy = ticket.getCreatedBy();
-//    this.createdDate = ticket.getCreatedDate();
+//    this.createdDate = ticket.getCreationDate();
     this.lastModifiedDate = ticket.getLastModifiedDate();
     this.status = ticket.getStatus();
     this.isResolved = ticket.isResolved();

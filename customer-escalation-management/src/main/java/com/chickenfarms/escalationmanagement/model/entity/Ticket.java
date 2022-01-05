@@ -2,17 +2,13 @@ package com.chickenfarms.escalationmanagement.model.entity;
 
 import com.chickenfarms.escalationmanagement.enums.Status;
 import com.chickenfarms.escalationmanagement.model.dto.TicketCreationRequest;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -22,7 +18,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -46,9 +41,8 @@ public class Ticket {
   private String provider;
   @Column(name = "created_by")
   private String createdBy;
-  @Column(name = "created_date")
-  @CreatedDate
-  private Date createdDate;
+  @Column(name = "creation_date")
+  private Date creationDate;
   @Column(name = "last_modified_date")
   private Date lastModifiedDate;
   @Column(name = "status")
@@ -57,9 +51,11 @@ public class Ticket {
   private Date closedDate;
   @Column(name = "is_resolved")
   private boolean isResolved;
+
   @ManyToOne
   @JoinColumn(name="problem_id")
   private Problem problem;
+
   @ManyToOne
   @JoinColumn(name="rc_id")
   private RootCause rootCause;
@@ -68,6 +64,7 @@ public class Ticket {
       cascade = CascadeType.ALL,
       orphanRemoval = true)
   private Set<CustomerTicket> customers = new HashSet<>();
+
   @ManyToMany
   @JoinTable(name = "tags_on_tickets",
       joinColumns =@JoinColumn(name="ticket_id"),
@@ -80,8 +77,8 @@ public class Ticket {
     provider = createdTicket.getProvider();
     this.problem = problem;
     status = Status.CREATED.getStatus();
-    createdDate = new Date();
-    lastModifiedDate = createdDate;
+    creationDate = new Date();
+    lastModifiedDate = creationDate;
     isResolved = false;
   }
 
@@ -91,8 +88,9 @@ public class Ticket {
     provider = ticket.getProvider();
     this.problem = ticket.getProblem();
     status = ticket.getStatus();
-    createdDate = new Date();
-    lastModifiedDate = createdDate;
+    setTags(ticket.getTags());
+    creationDate = new Date();
+    lastModifiedDate = creationDate;
     isResolved = false;
   }
 

@@ -76,8 +76,9 @@ public class SingelTicketController {
   }
 
   @PutMapping("/ticket/{ticketId}/ready/{rootCauseId}")
-  public Long updateTicketToReady(@PathVariable Long ticketId, @PathVariable Long rootCauseId){
-    return ticketService.moveTicketToReady(ticketId, rootCauseId);
+  public TicketResponse updateTicketToReady(@PathVariable Long ticketId, @PathVariable Long rootCauseId){
+
+    return new TicketResponse(ticketService.moveTicketToReady(ticketId, rootCauseId));
   }
 
   @PutMapping("/ticket/{id}/close")
