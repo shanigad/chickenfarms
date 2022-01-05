@@ -2,6 +2,7 @@ package com.chickenfarms.escalationmanagement.model.dto;
 
 import com.chickenfarms.escalationmanagement.model.entity.Comment;
 import com.chickenfarms.escalationmanagement.model.entity.Problem;
+import com.chickenfarms.escalationmanagement.model.entity.RootCause;
 import com.chickenfarms.escalationmanagement.model.entity.Tag;
 import com.chickenfarms.escalationmanagement.model.entity.Ticket;
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ import lombok.Getter;
 
 
 @Getter
-public class TicketDto {
+public class TicketResponse {
   private long number;
   private String description;
   private String provider;
@@ -22,12 +23,15 @@ public class TicketDto {
   private Date lastModifiedDate;
   private String status;
   private String problem;
+  private String rootCause;
+  private boolean isResolved;
+  private Date closedDate;
 
   private Set<String> tags;
 //  private Set<Long> customers;
   private List<String> comments;
 
-  public TicketDto(Ticket ticket) {
+  public TicketResponse(Ticket ticket) {
     this.number = ticket.getId();
     this.description = ticket.getDescription();
     this.provider = ticket.getProvider();
@@ -35,10 +39,13 @@ public class TicketDto {
 //    this.createdDate = ticket.getCreatedDate();
     this.lastModifiedDate = ticket.getLastModifiedDate();
     this.status = ticket.getStatus();
+    this.isResolved = ticket.isResolved();
+    this.closedDate = ticket.getClosedDate();
     setProblem(ticket.getProblem());
     setTags(ticket.getTags());
 //    setCustomers(ticket.getCustomers());
     setComments(ticket.getComments());
+    setRootCause(ticket.getRootCause());
   }
 
 
@@ -58,4 +65,9 @@ public class TicketDto {
   private void setProblem(Problem problem) {
     this.problem = problem == null? "": problem.getName();
   }
+
+  private void setRootCause(RootCause rc) {
+    this.rootCause = rc == null? "": rc.getName();
+  }
+
 }
