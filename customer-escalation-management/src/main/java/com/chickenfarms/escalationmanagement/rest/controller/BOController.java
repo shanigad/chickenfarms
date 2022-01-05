@@ -37,7 +37,7 @@ public class BOController {
   @PostMapping("/tag")
   @ResponseStatus(HttpStatus.CREATED)
   public Tag createTag(@Valid @RequestBody BORequest tag){
-    return tagService.createTag(tag);
+    return tagService.createTag(tag.getName());
   }
 
 }

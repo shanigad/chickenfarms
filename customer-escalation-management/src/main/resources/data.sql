@@ -1,4 +1,4 @@
-INSERT IGNORE INTO problem (id,name) VALUES (101,'General Error'),
+INSERT IGNORE INTO problem (problem_id,name) VALUES (101,'General Error'),
                                             (102,'Missing Chicken'),
                                             (103,'Invalid Chicken'),
                                             (104,'Wrong Chicken'),

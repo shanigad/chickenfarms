@@ -62,8 +62,8 @@ public class TicketManagerServiceTest {
   @Test
   public void SubmitTicketProblemNotFoundTest(){
     Long[] customers = {125L};
-    TicketCreationRequest createdTicket = new TicketCreationRequest("provider", "description", 0, "createdBy", customers);
-    when(problemRepository.findById(anyInt())).thenReturn(Optional.empty());
+    TicketCreationRequest createdTicket = new TicketCreationRequest("provider", "description", 0L, "createdBy", customers);
+    when(problemRepository.findById(anyLong())).thenReturn(Optional.empty());
     assertThatExceptionOfType(ResourceNotFoundException.class).isThrownBy(() ->{
       ticketManagerService.submitTicket(createdTicket);
     });
@@ -72,8 +72,8 @@ public class TicketManagerServiceTest {
   @Test
   public void SubmitTicketDuplicateTest(){
     Long[] customers = {125L};
-    TicketCreationRequest createdTicket = new TicketCreationRequest("provider", "description", 0, "createdBy", customers);
-    when(problemRepository.findById(anyInt())).thenReturn(Optional.of(new Problem()));
+    TicketCreationRequest createdTicket = new TicketCreationRequest("provider", "description", 0L, "createdBy", customers);
+    when(problemRepository.findById(anyLong())).thenReturn(Optional.of(new Problem()));
     when(ticketRepository.findTicketByProblemAndProviderAndCreatedBy(ArgumentMatchers.any(Problem.class), anyString(), anyString()))
         .thenReturn(new Ticket());
     assertThatExceptionOfType(ResourceAlreadyExistException.class).isThrownBy(() ->{
@@ -84,7 +84,7 @@ public class TicketManagerServiceTest {
   @Test
   public void moveToReadyRootCauseNotFoundTest(){
     assertThatExceptionOfType(ResourceNotFoundException.class).isThrownBy(() ->{
-      ticketManagerService.moveTicketToReady(1L, 1);
+      ticketManagerService.moveTicketToReady(1L, 1L);
     });
   }
 
@@ -92,7 +92,7 @@ public class TicketManagerServiceTest {
   public void moveToReadyTicketNotFoundTest(){
     when(ticketRepository.findById(anyLong())).thenReturn(Optional.empty());
     assertThatExceptionOfType(ResourceNotFoundException.class).isThrownBy(() ->{
-      ticketManagerService.moveTicketToReady(1L, 1);
+      ticketManagerService.moveTicketToReady(1L, 1L);
     });
   }
 
@@ -102,7 +102,7 @@ public class TicketManagerServiceTest {
     ticket.setStatus(Status.CLOSED.getStatus());
     when(ticketRepository.findById(anyLong())).thenReturn(Optional.of(ticket));
     assertThatExceptionOfType(ChangeStatusException.class).isThrownBy(() ->{
-      ticketManagerService.moveTicketToReady(1L, 1);
+      ticketManagerService.moveTicketToReady(1L, 1L);
     });
   }
 

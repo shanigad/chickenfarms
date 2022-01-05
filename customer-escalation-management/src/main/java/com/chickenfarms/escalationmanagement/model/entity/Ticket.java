@@ -2,6 +2,7 @@ package com.chickenfarms.escalationmanagement.model.entity;
 
 import com.chickenfarms.escalationmanagement.enums.Status;
 import com.chickenfarms.escalationmanagement.model.dto.TicketCreationRequest;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.Date;
 import java.util.HashSet;
@@ -15,14 +16,18 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name="ticket")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
@@ -49,11 +54,8 @@ public class Ticket {
   private Date closedDate;
   @Column(name = "is_resolved")
   private boolean isResolved;
-  @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "tickets")
-  @JsonIgnoreProperties(value = {"applications", "hibernateLazyInitializer"})
-  private Set<Tag> tags;
   @ManyToOne
-  @JoinColumn(name="id", nullable=false)
+  @JoinColumn(name="problem_id")
   private Problem problem;
   @ManyToOne
   @JoinColumn(name="rc_id")
@@ -63,7 +65,11 @@ public class Ticket {
       cascade = CascadeType.ALL,
       orphanRemoval = true)
   private Set<CustomerTicket> customers;
-
+  @ManyToMany
+  @JoinTable(name = "tags_on_tickets",
+      joinColumns =@JoinColumn(name="ticket_id"),
+      inverseJoinColumns=@JoinColumn(name = "tag_id"))
+  private Set<Tag> tags = new HashSet<>();
 
   public Ticket(TicketCreationRequest createdTicket, Problem problem){
     description = createdTicket.getDescription();
@@ -78,16 +84,13 @@ public class Ticket {
 
 
   public Ticket() {
-
   }
 
   public void setTags(Set<Tag> tags) {
-    this.tags = new HashSet<>();
     tags.stream().forEach(tag -> this.tags.add(tag));
   }
 
   public void setCustomers(Set<CustomerTicket> customers) {
-    this.customers = new HashSet<>();
     customers.stream().forEach(c -> this.customers.add(c));
   }
 

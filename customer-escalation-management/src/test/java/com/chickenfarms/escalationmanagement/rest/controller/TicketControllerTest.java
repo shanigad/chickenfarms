@@ -42,7 +42,7 @@ public class TicketControllerTest {
   @Test
   public void whenValidUrlAndMethodAndContentTypeAndInput_thenReturns201() throws Exception {
     Long[] customers = {125L};
-    TicketCreationRequest createdTicket = new TicketCreationRequest("provider", "description", 101, "createdBy", customers);
+    TicketCreationRequest createdTicket = new TicketCreationRequest("provider", "description", 101L, "createdBy", customers);
     mockMvc.perform(post("/ticket")
             .contentType("application/json")
             .content(objectMapper.writeValueAsString(createdTicket)))
@@ -52,7 +52,7 @@ public class TicketControllerTest {
   @Test
   void whenEmptyValues_thenReturns400() throws Exception {
    Long[] customers = {};
-   TicketCreationRequest createdTicket = new TicketCreationRequest("", "", 101, "", customers);
+   TicketCreationRequest createdTicket = new TicketCreationRequest("", "", 101L, "", customers);
 
     mockMvc.perform(post("/ticket")
             .contentType("application/json")

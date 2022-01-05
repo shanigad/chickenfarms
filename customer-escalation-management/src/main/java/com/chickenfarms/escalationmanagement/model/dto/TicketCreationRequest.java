@@ -14,7 +14,7 @@ public class TicketCreationRequest {
   @NotBlank(message = "description must not be empty")
   private String description;
   @NotNull(message = "problem number must not be empty")
-  private int problem;
+  private Long problem;
   @NotBlank(message = "created by must not be empty")
   private String createdBy;
   @NotNull(message = "customers list must contain at least 1 customer")

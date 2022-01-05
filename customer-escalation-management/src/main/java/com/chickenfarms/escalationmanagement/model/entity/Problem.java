@@ -5,23 +5,22 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 
 @Data
-@RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name="problem")
 public class Problem {
 
   @Id
-  @Column(name = "id", nullable = false)
-  private int id;
+  @GeneratedValue(strategy= GenerationType.AUTO)
+  @Column(name = "problem_id", nullable = false)
+  private Long id;
   @Column(name = "name", nullable = false)
   private String name;
 
-  public Problem(int id, String name) {
-    this.id = id;
-    this.name = name;
-  }
 }

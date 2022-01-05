@@ -1,7 +1,9 @@
 package com.chickenfarms.escalationmanagement.model.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -26,10 +28,7 @@ public class Tag {
   private Long id;
   @Column(name = "name", nullable = false)
   private String name;
-  @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-  @JoinTable(name = "TAGS_IN_TICKETS",
-      joinColumns = { @JoinColumn(name="tag_id")},
-      inverseJoinColumns={@JoinColumn(name = "ticket_id")})
-  @JsonIgnoreProperties(value = {"applications", "hibernateLazyInitializer"})
-  private Set<Ticket> tickets;
+  @JsonIgnore
+  @ManyToMany(mappedBy = "tags")
+  private Set<Ticket> tickets = new HashSet<>();
 }

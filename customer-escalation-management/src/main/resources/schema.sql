@@ -1,10 +1,10 @@
 CREATE TABLE IF NOT EXISTS `problem` (
-                          `id` int NOT NULL,
+                          `problem_id` bigint(50) NOT NULL,
                           `name` varchar(50) DEFAULT NULL,
-                          PRIMARY KEY (`id`)
+                          PRIMARY KEY (`problem_id`)
 );
 CREATE TABLE IF NOT EXISTS `root_cause` (
-                                         `rc_id` int NOT NULL,
+                                         `rc_id` bigint(50) NOT NULL,
                                          `name` varchar(50) DEFAULT NULL,
                                          PRIMARY KEY (`rc_id`)
 );
