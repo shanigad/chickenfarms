@@ -28,6 +28,8 @@ class ProblemServiceTest {
   @Test
   void createProblemAlreadyExistTest() {
     Problem problem = new Problem();
+    problem.setName("problem");
+    problem.setId(1L);
     when(problemRepository.findProblemByName(anyString())).thenReturn(Optional.of(problem));
     assertThatExceptionOfType(ResourceAlreadyExistException.class).isThrownBy(() -> {
       problemService.createProblem(new BORequest("problem"));
@@ -39,6 +41,7 @@ class ProblemServiceTest {
     BORequest payload = new BORequest("test");
     Problem problem = new Problem();
     problem.setName(payload.getName());
+    problem.setId(1L);
     when(problemRepository.findProblemByName(anyString())).thenReturn(Optional.empty());
     when(problemRepository.save(any(Problem.class))).thenReturn(problem);
     assertTrue(problemService.createProblem(payload).equals(problem));
