@@ -49,12 +49,12 @@ public class TicketService {
     Ticket ticket = getTicketIfExist(id);
     if(Status.READY.getStatus().equals(ticket.getStatus())){
       ticket.setStatus(Status.CLOSED.getStatus());
+      ticket.setResolved(closeTicketRequest.isResolved());
       ticket.setClosedDate(new Date());
       saveToRepository(ticket);
-//        ticketRepository.setStatusAndIsResolvedForTicket(Status.CLOSED.getStatus(), closeTicketRequest.isResolved(), id);
     }
     else{
-      // Can't close ticket with status ?
+      throw new ChangeStatusException(Status.CLOSED.getStatus(), "You tried to change status from status " + ticket.getStatus() + " it is allowed only for tickets with status 'Ready'");
     }
   }
 
@@ -71,7 +71,7 @@ public class TicketService {
       return getReadyTicket(ticket, rootCauseId);
     }
     else{
-      throw new ChangeStatusException(Status.READY.getStatus(), "it is allowed only for tickets with status 'Created' and this ticket is  " + ticket.getStatus());
+      throw new ChangeStatusException(Status.READY.getStatus(), "You tried to change status from status " + ticket.getStatus() + " it is allowed only for tickets with status 'Created'");
     }
   }
 
@@ -117,7 +117,6 @@ public class TicketService {
     ticketRepository.flush();
     return ticket;
   }
-
 
   private Long getReadyTicket(Ticket ticket, Long rootCauseId) {
     RootCause rootCause  = rootCauseRepository.findById(rootCauseId).

@@ -80,10 +80,8 @@ public class SingelTicketController {
   }
 
   @PutMapping("/ticket/{id}/close")
-  public String closeTicket(@PathVariable Long id, @Valid @RequestBody CloseTicketRequest payload){
-    //close only ready ticket
-    // check is resolve
-    // update closed date
+  public String closeTicket(@PathVariable Long id, @Valid @RequestBody CloseTicketRequest closeTicketRequest){
+    ticketService.closeTicket(id,closeTicketRequest);
     return "Ticket " + id + "successfully closed" ;
   }
 

@@ -49,8 +49,6 @@ public class EscalationsManagerController {
   }
 
 
-
-
   @PostMapping("/ticket")
   @ResponseStatus(HttpStatus.CREATED)
   public String createTicket(@Valid @RequestBody TicketCreationRequest ticketCreationRequest){
