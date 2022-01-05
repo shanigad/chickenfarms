@@ -1,14 +1,11 @@
 package com.chickenfarms.escalationmanagement.model.dto;
 
-import com.chickenfarms.escalationmanagement.model.entity.Comment;
 import com.chickenfarms.escalationmanagement.model.entity.Problem;
 import com.chickenfarms.escalationmanagement.model.entity.RootCause;
 import com.chickenfarms.escalationmanagement.model.entity.Tag;
 import com.chickenfarms.escalationmanagement.model.entity.Ticket;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import lombok.Getter;
 
@@ -29,7 +26,6 @@ public class TicketResponse {
 
   private Set<String> tags;
 //  private Set<Long> customers;
-  private List<String> comments;
 
   public TicketResponse(Ticket ticket) {
     this.number = ticket.getId();
@@ -44,7 +40,6 @@ public class TicketResponse {
     setProblem(ticket.getProblem());
     setTags(ticket.getTags());
 //    setCustomers(ticket.getCustomers());
-    setComments(ticket.getComments());
     setRootCause(ticket.getRootCause());
   }
 
@@ -58,10 +53,6 @@ public class TicketResponse {
 //     customers.stream().forEach(c -> this.customers.add(c.getCustomerId()));
 //  }
 
-  private void setComments(List<Comment> comments){
-    this.comments = new ArrayList<>();
-    comments.stream().forEach(comment -> this.comments.add(comment.toString()));
-  }
   private void setProblem(Problem problem) {
     this.problem = problem == null? "": problem.getName();
   }

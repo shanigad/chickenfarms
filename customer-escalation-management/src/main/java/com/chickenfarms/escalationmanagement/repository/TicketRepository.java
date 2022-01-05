@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 public interface TicketRepository extends JpaRepository<Ticket, Long> {
   Ticket findTicketByProblemAndProviderAndCreatedBy(Problem problem, String provider, String createdBy);
   Optional<Ticket> findTicketByProviderAndRootCause(String provider, RootCause rootCause);
-
   @Query(value = "SELECT t FROM Ticket t WHERE (:status is null or t.status = :status) and (:provider is null"
       + " or t.provider = :provider) and (:problem is null or t.problem = :problem)")
   Page<Ticket> getAllByStatusAndProviderAndProblem(String status, String provider, Problem problem, Pageable pageable);

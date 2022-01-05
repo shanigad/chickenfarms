@@ -75,14 +75,6 @@ public class TicketService {
     }
   }
 
-
-  public Ticket postComment(Long ticketId, PostCommentRequest postCommentRequest){
-    Ticket ticket = getTicketIfExist(ticketId);
-    Comment comment = commentService.postComment(postCommentRequest, ticket);
-    ticket.addComment(comment);
-    return saveToRepository(ticket);
-  }
-
   @Transactional
   void saveReconciledTickets(Ticket ticket, Ticket readyTicket) {
     saveToRepository(readyTicket);

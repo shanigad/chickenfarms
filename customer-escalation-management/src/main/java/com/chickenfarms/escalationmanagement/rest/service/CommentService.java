@@ -6,6 +6,9 @@ import com.chickenfarms.escalationmanagement.model.entity.Ticket;
 import com.chickenfarms.escalationmanagement.repository.CommentRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -24,5 +27,9 @@ public class CommentService {
     return comment;
   }
 
+
+  public Page<Comment> getTicketComments(Ticket ticket, int page){
+    return commentRepository.getAllByTicket(ticket, PageRequest.of(page, 5));
+  }
 
 }

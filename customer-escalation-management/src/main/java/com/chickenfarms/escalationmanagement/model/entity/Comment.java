@@ -1,6 +1,7 @@
 package com.chickenfarms.escalationmanagement.model.entity;
 
 import com.chickenfarms.escalationmanagement.model.dto.PostCommentRequest;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -35,6 +36,7 @@ public class Comment {
   private Date createdDate;
   @Column(name = "content")
   private String content;
+  @JsonIgnore
   @ManyToOne
   @JoinColumn(name="ticket_id", nullable=false)
   private Ticket ticket;
@@ -48,7 +50,7 @@ public class Comment {
 
   @Override
   public String toString(){
-    return getCreatedDate().getTime() + " " +getCreatedBy() + ": " + getContent();
+    return getCreatedDate() + " " +getCreatedBy() + ": " + getContent();
   }
 
 }

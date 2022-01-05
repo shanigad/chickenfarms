@@ -4,10 +4,13 @@ import com.chickenfarms.escalationmanagement.model.dto.CloseTicketRequest;
 import com.chickenfarms.escalationmanagement.model.dto.PostCommentRequest;
 import com.chickenfarms.escalationmanagement.model.dto.TicketResponse;
 import com.chickenfarms.escalationmanagement.model.dto.TicketUpdateRequest;
+import com.chickenfarms.escalationmanagement.model.entity.Comment;
 import com.chickenfarms.escalationmanagement.model.entity.Ticket;
+import com.chickenfarms.escalationmanagement.rest.service.CommentService;
 import com.chickenfarms.escalationmanagement.rest.service.CustomerService;
 import com.chickenfarms.escalationmanagement.rest.service.TicketService;
 import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,6 +28,7 @@ public class SingelTicketController {
 
   private final TicketService ticketService;
   private final CustomerService customerService;
+  private final CommentService commentService;
 
   @GetMapping("/ticket/{id}")
   public TicketResponse getTicket(@PathVariable Long id){
@@ -37,6 +41,14 @@ public class SingelTicketController {
     return customerService.getCustomersByTicket(ticket);
   }
 
+  @GetMapping("/ticket/{id}/comments/{page}")
+  public List<String> getComments(@PathVariable Long id, @PathVariable int page){
+    Ticket ticket = ticketService.getTicketIfExist(id);
+    List<String> comments = new ArrayList<>();
+    commentService.getTicketComments(ticket,page).forEach(comment -> comments.add(comment.toString()));
+//    ticket.getComments();
+    return comments;
+  }
 
   @PostMapping("/ticket/{id}/split/{rootCauseId}")
   public String splitTicket(@PathVariable Long id, @PathVariable Long rootCauseId){
@@ -56,10 +68,12 @@ public class SingelTicketController {
   }
 
   @PostMapping("/ticket/{id}/comment")
-  public TicketResponse postComment(@PathVariable Long id, @RequestBody
+  public Comment postComment(@PathVariable Long id, @RequestBody
       PostCommentRequest postCommentRequest){
-    Ticket ticket = ticketService.postComment(id, postCommentRequest);
-    return new TicketResponse(ticket);
+    Ticket ticket = ticketService.getTicketIfExist(id);
+     return commentService.postComment(postCommentRequest, ticket);
+//    Ticket ticket = ticketService.postComment(id, postCommentRequest);
+//    return new TicketResponse(ticket);
   }
 
   @PutMapping("/ticket/{id}")

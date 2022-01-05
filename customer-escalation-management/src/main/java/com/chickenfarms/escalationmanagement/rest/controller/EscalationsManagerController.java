@@ -39,10 +39,10 @@ public class EscalationsManagerController {
 //    return null;
 //  }
 
-  @GetMapping("/tickets/filter/{pageNum}")
+  @GetMapping("/tickets/filter/{page}")
   public List<TicketResponse> getTicketsByFilter(@RequestBody TicketFilterRequest ticketFilterRequest,
-                                                 @PathVariable int pageNum){
-    Page<Ticket> tickets = escalationsManagerService.getFilteredTickets(ticketFilterRequest, pageNum);
+                                                 @PathVariable int page){
+    Page<Ticket> tickets = escalationsManagerService.getFilteredTickets(ticketFilterRequest, page);
     List<TicketResponse> dtoTickets = new ArrayList<>();
     tickets.stream().forEach(ticket -> dtoTickets.add(new TicketResponse(ticket)));
     return dtoTickets;

@@ -61,9 +61,7 @@ public class Ticket {
   @ManyToOne
   @JoinColumn(name="rc_id")
   private RootCause rootCause;
-  @JsonIgnore
-  @OneToMany(mappedBy = "ticket")
-  List<Comment> comments = new ArrayList<>();
+
   @OneToMany(mappedBy = "customerId",
       cascade = CascadeType.ALL,
       orphanRemoval = true)
@@ -113,7 +111,6 @@ public class Ticket {
     this.customers.addAll(customers);
   }
 
-  public void addComment(Comment comment){comments.add(comment);}
 
 
 
