@@ -84,7 +84,7 @@ public class SingelTicketController {
   @PutMapping("/ticket/{id}/close")
   public String closeTicket(@PathVariable Long id, @Valid @RequestBody CloseTicketRequest closeTicketRequest){
     ticketService.closeTicket(id,closeTicketRequest);
-    return "Ticket " + id + "successfully closed" ;
+    return "Ticket " + id + " successfully closed" ;
   }
 
 }

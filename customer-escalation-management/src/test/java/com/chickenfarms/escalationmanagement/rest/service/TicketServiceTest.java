@@ -31,9 +31,11 @@ public class TicketServiceTest {
   @Mock
   private CustomerService customerService;
   @Mock
-  private ProblemRepository problemRepository;
+  private TagService tagService;
   @Mock
-  private RootCauseRepository rootCauseRepository;
+  private ProblemService problemService;
+  @Mock
+  private RootCauseService rootCauseService;
   @InjectMocks
   private TicketService ticketService;
 
@@ -58,20 +60,10 @@ public class TicketServiceTest {
 
 
   @Test
-  public void SubmitTicketProblemNotFoundTest(){
-    Long[] customers = {125L};
-    TicketCreationRequest createdTicket = new TicketCreationRequest("provider", "description", 0L, "createdBy", customers);
-    when(problemRepository.findById(anyLong())).thenReturn(Optional.empty());
-    assertThatExceptionOfType(ResourceNotFoundException.class).isThrownBy(() ->{
-      ticketService.submitTicket(createdTicket);
-    });
-  }
-
-  @Test
   public void SubmitTicketDuplicateTest(){
     Long[] customers = {125L};
     TicketCreationRequest createdTicket = new TicketCreationRequest("provider", "description", 0L, "createdBy", customers);
-    when(problemRepository.findById(anyLong())).thenReturn(Optional.of(new Problem()));
+    when(problemService.getProblemIfExist(anyLong())).thenReturn(new Problem());
     when(ticketRepository.findTicketByProblemAndProviderAndCreatedBy(ArgumentMatchers.any(Problem.class), anyString(), anyString()))
         .thenReturn(new Ticket());
     assertThatExceptionOfType(ResourceAlreadyExistException.class).isThrownBy(() ->{
