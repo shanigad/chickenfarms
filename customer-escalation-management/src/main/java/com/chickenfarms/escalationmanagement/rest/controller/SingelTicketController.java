@@ -59,7 +59,7 @@ public class SingelTicketController {
   @PostMapping("/ticket/{id}/tag")
   public String addTagToTicket(@PathVariable Long id, @RequestParam String tagName){
     Ticket t = ticketService.addTagToTicket(id, tagName);
-    return "Tag " + tagName + " successfully added to Ticket " + id + " ticket = " + t ;
+    return "Tag " + tagName + " successfully added to Ticket " + id;
   }
 
   @PostMapping("/ticket/{id}/comment")
