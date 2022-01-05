@@ -2,7 +2,7 @@ package com.chickenfarms.escalationmanagement.rest.controller;
 
 import com.chickenfarms.escalationmanagement.model.dto.CloseTicketRequest;
 import com.chickenfarms.escalationmanagement.model.dto.PostCommentRequest;
-import com.chickenfarms.escalationmanagement.model.dto.TicketDto;
+import com.chickenfarms.escalationmanagement.model.dto.TicketResponse;
 import com.chickenfarms.escalationmanagement.model.dto.TicketUpdateRequest;
 import com.chickenfarms.escalationmanagement.model.entity.Ticket;
 import com.chickenfarms.escalationmanagement.rest.service.CustomerService;
@@ -27,8 +27,8 @@ public class SingelTicketController {
   private final CustomerService customerService;
 
   @GetMapping("/ticket/{id}")
-  public TicketDto getTicket(@PathVariable Long id){
-    return new TicketDto(ticketService.getTicketIfExist(id));
+  public TicketResponse getTicket(@PathVariable Long id){
+    return new TicketResponse(ticketService.getTicketIfExist(id));
   }
 
   @GetMapping("/ticket/{id}/customers")
@@ -56,10 +56,10 @@ public class SingelTicketController {
   }
 
   @PostMapping("/ticket/{id}/comment")
-  public TicketDto postComment(@PathVariable Long id, @RequestBody
+  public TicketResponse postComment(@PathVariable Long id, @RequestBody
       PostCommentRequest postCommentRequest){
     Ticket ticket = ticketService.postComment(id, postCommentRequest);
-    return new TicketDto(ticket);
+    return new TicketResponse(ticket);
   }
 
   @PutMapping("/ticket/{id}")
