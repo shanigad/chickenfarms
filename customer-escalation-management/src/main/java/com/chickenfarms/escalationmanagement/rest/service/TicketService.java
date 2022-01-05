@@ -7,6 +7,7 @@ import com.chickenfarms.escalationmanagement.exception.ResourceNotFoundException
 import com.chickenfarms.escalationmanagement.model.dto.CloseTicketRequest;
 import com.chickenfarms.escalationmanagement.model.dto.PostCommentRequest;
 import com.chickenfarms.escalationmanagement.model.dto.TicketCreationRequest;
+import com.chickenfarms.escalationmanagement.model.dto.TicketUpdateRequest;
 import com.chickenfarms.escalationmanagement.model.entity.Comment;
 import com.chickenfarms.escalationmanagement.model.entity.Problem;
 import com.chickenfarms.escalationmanagement.model.entity.RootCause;
@@ -27,15 +28,13 @@ public class TicketService {
 
   private final CustomerService customerService;
   private final TagService tagService;
-  private final CommentService commentService;
+  private final ProblemService problemService;
+  private final RootCauseService rootCauseService;
 
   private final TicketRepository ticketRepository;
-  private final ProblemRepository problemRepository;
-  private final RootCauseRepository rootCauseRepository;
 
   public Long submitTicket(TicketCreationRequest createdTicket){
-    Problem problem = problemRepository.findById(createdTicket.getProblem()).
-        orElseThrow(()-> new ResourceNotFoundException("Problem", "id", String.valueOf(createdTicket.getProblem())));
+    Problem problem = problemService.getProblemIfExist(createdTicket.getProblem());
     handleDuplicateTicket(createdTicket, problem);
     Long ticketId = saveTicketAndCustomers(createdTicket, problem);
     return ticketId;
@@ -54,7 +53,7 @@ public class TicketService {
       saveToRepository(ticket);
     }
     else{
-      throw new ChangeStatusException(Status.CLOSED.getStatus(), "You tried to change status from status " + ticket.getStatus() + " it is allowed only for tickets with status 'Ready'");
+      throw new ChangeStatusException(Status.CLOSED.getStatus(), "You tried to change status from status " + ticket.getStatus() + " ,it is allowed only for tickets with status 'Ready'");
     }
   }
 
@@ -71,11 +70,40 @@ public class TicketService {
       return getReadyTicket(ticket, rootCauseId);
     }
     else{
-      throw new ChangeStatusException(Status.READY.getStatus(), "You tried to change status from status " + ticket.getStatus() + " it is allowed only for tickets with status 'Created'");
+      throw new ChangeStatusException(Status.READY.getStatus(), "You tried to change status from status " + ticket.getStatus() + " ,it is allowed only for tickets with status 'Created'");
     }
   }
 
-  @Transactional
+  public Ticket updateTicket(Long id, TicketUpdateRequest updateRequest){
+    Ticket ticket = getTicketIfExist(id);
+    if(!updateRequest.getDescription().isEmpty()){
+      ticket.setDescription(updateRequest.getDescription());
+    }
+    if(updateRequest.getProblem() != null){
+      Problem problem = problemService.getProblemIfExist(updateRequest.getProblem());
+      ticket.setProblem(problem);
+    }
+    ticket = saveToRepository(ticket);
+    return ticket;
+  }
+
+  public Ticket splitTicket(Long id, Long RootCauseId){
+    Ticket ticket = getTicketIfExist(id);
+    //check not the same root cause
+    RootCause rootCause = rootCauseService.getRootCauseIfExist(RootCauseId);
+    if(Status.CLOSED.getStatus().equals(ticket.getStatus())){
+      throw new ChangeStatusException(Status.READY.getStatus(), "You tried to split " + ticket.getStatus() + " ticket,  it is allowed only for tickets with status 'Created'/'Ready'/'Reconciled'");
+    }
+    Ticket splitTicket = new Ticket(ticket);
+    // create ticket and move customers from old one
+    saveToRepository(splitTicket);
+    Long newId = moveTicketToReady(splitTicket.getId(), rootCause.getId());
+    // set SLA to earliest Customer’s SLA from the original Ticket
+    return getTicketIfExist(newId);
+  }
+
+
+    @Transactional
   void saveReconciledTickets(Ticket ticket, Ticket readyTicket) {
     saveToRepository(readyTicket);
     saveToRepository(ticket);
@@ -111,8 +139,7 @@ public class TicketService {
   }
 
   private Long getReadyTicket(Ticket ticket, Long rootCauseId) {
-    RootCause rootCause  = rootCauseRepository.findById(rootCauseId).
-        orElseThrow(()-> new ResourceNotFoundException("RootCause", "id", String.valueOf(rootCauseId)));
+    RootCause rootCause = rootCauseService.getRootCauseIfExist(rootCauseId);
     Optional<Ticket> readyTicket = ticketRepository.findTicketByProviderAndRootCause(ticket.getProvider(), rootCause);
     if(readyTicket.isPresent()){
       reconcileTickets(ticket, readyTicket.get());

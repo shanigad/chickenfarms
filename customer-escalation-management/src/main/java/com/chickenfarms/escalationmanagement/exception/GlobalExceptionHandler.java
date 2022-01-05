@@ -5,6 +5,7 @@ import com.chickenfarms.escalationmanagement.model.dto.ErrorDetails;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import javax.validation.ValidationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -55,6 +56,15 @@ public class GlobalExceptionHandler {
         webRequest.getDescription(false));
 
     return new ResponseEntity<>(errorDetails, HttpStatus.CONFLICT);
+  }
+
+  @ExceptionHandler(ValidationException.class)
+  public ResponseEntity<ErrorDetails> handleValidationException(ValidationException exception,  WebRequest webRequest){
+
+    ErrorDetails errorDetails = new ErrorDetails(new Date(), exception.getMessage(),
+        webRequest.getDescription(false));
+
+    return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
   }
 
 }

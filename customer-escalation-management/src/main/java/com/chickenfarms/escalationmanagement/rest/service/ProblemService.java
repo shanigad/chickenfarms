@@ -1,6 +1,7 @@
 package com.chickenfarms.escalationmanagement.rest.service;
 
 import com.chickenfarms.escalationmanagement.exception.ResourceAlreadyExistException;
+import com.chickenfarms.escalationmanagement.exception.ResourceNotFoundException;
 import com.chickenfarms.escalationmanagement.model.dto.BORequest;
 import com.chickenfarms.escalationmanagement.model.entity.Problem;
 import com.chickenfarms.escalationmanagement.repository.ProblemRepository;
@@ -22,6 +23,13 @@ public class ProblemService {
     return saveProblem(problem);
   }
 
+  public List<Problem> getProblems(){
+    return problemRepository.findAll();
+  }
+  public Problem getProblemIfExist(Long id){
+    return problemRepository.findById(id).
+        orElseThrow(()-> new ResourceNotFoundException("Problem", "id", String.valueOf(id)));
+  }
   private Problem saveProblem(Problem problem) {
     problem = problemRepository.save(problem);
     problemRepository.flush();
@@ -35,9 +43,6 @@ public class ProblemService {
     }
   }
 
-  public List<Problem> getProblems(){
-   return problemRepository.findAll();
-  }
 
 
 }

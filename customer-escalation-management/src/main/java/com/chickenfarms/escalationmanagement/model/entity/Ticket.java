@@ -24,11 +24,13 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 
 @Getter
 @Setter
+@NoArgsConstructor
 @Entity
 @Table(name="ticket")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
@@ -83,9 +85,18 @@ public class Ticket {
     isResolved = false;
   }
 
-
-  public Ticket() {
+  public Ticket(Ticket ticket) {
+    description = ticket.getDescription();
+    createdBy = ticket.getCreatedBy();
+    provider = ticket.getProvider();
+    this.problem = ticket.getProblem();
+    status = ticket.getStatus();
+    createdDate = new Date();
+    lastModifiedDate = createdDate;
+    isResolved = false;
   }
+
+
 
   public void setTags(Set<Tag> tags) {
     tags.stream().forEach(tag -> this.tags.add(tag));

@@ -1,14 +1,35 @@
 package com.chickenfarms.escalationmanagement.model.dto;
 
-import javax.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
+import javax.validation.ValidationException;
 import lombok.Getter;
 
-@AllArgsConstructor
 @Getter
 public class TicketUpdateRequest {
 
-  @NotNull
-  String description;
-  private int problem;
+  private String description;
+  private Long problem;
+
+  public TicketUpdateRequest(String description, Long problem) {
+    this.description = description;
+    this.problem = problem;
+    handleAllArgsNull();
+  }
+
+  private void handleAllArgsNull() {
+    if(isDescriptionAndProblemMissing()){
+        throw new ValidationException("description or problem is required");
+    }
+  }
+
+  public boolean isDescriptionAndProblemMissing() {
+    return description == null && problem == null;
+  }
+
+  public String getDescription() {
+    if(description == null){
+      return "";
+    }
+    return description;
+  }
 }
+
