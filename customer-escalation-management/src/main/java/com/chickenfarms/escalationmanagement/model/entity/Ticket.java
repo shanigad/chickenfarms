@@ -4,6 +4,7 @@ import com.chickenfarms.escalationmanagement.enums.Status;
 import com.chickenfarms.escalationmanagement.model.dto.TicketCreationRequest;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -60,11 +61,13 @@ public class Ticket {
   @ManyToOne
   @JoinColumn(name="rc_id")
   private RootCause rootCause;
-
+  @JsonIgnore
+  @OneToMany(mappedBy = "ticket")
+  List<Comment> comments = new ArrayList<>();
   @OneToMany(mappedBy = "customerId",
       cascade = CascadeType.ALL,
       orphanRemoval = true)
-  private Set<CustomerTicket> customers;
+  private Set<CustomerTicket> customers = new HashSet<>();
   @ManyToMany
   @JoinTable(name = "tags_on_tickets",
       joinColumns =@JoinColumn(name="ticket_id"),
@@ -98,7 +101,7 @@ public class Ticket {
     tags.add(tag);
   }
 
-   public void addTags(Set<Tag> tags){
+  public void addTags(Set<Tag> tags){
     this.tags.addAll(tags);
   }
 
@@ -106,10 +109,11 @@ public class Ticket {
     customers.add(customer);
   }
 
-   public void addCustomers(Set<CustomerTicket> customers){
+  public void addCustomers(Set<CustomerTicket> customers){
     this.customers.addAll(customers);
   }
 
+  public void addComment(Comment comment){comments.add(comment);}
 
 
 

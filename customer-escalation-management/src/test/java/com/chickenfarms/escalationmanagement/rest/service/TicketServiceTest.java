@@ -2,7 +2,6 @@ package com.chickenfarms.escalationmanagement.rest.service;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -13,7 +12,6 @@ import com.chickenfarms.escalationmanagement.exception.ResourceAlreadyExistExcep
 import com.chickenfarms.escalationmanagement.exception.ResourceNotFoundException;
 import com.chickenfarms.escalationmanagement.model.dto.TicketCreationRequest;
 import com.chickenfarms.escalationmanagement.model.entity.Problem;
-import com.chickenfarms.escalationmanagement.model.entity.RootCause;
 import com.chickenfarms.escalationmanagement.model.entity.Ticket;
 import com.chickenfarms.escalationmanagement.repository.ProblemRepository;
 import com.chickenfarms.escalationmanagement.repository.RootCauseRepository;
@@ -27,7 +25,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class TicketManagerServiceTest {
+public class TicketServiceTest {
   @Mock
   private TicketRepository ticketRepository;
   @Mock
@@ -37,7 +35,7 @@ public class TicketManagerServiceTest {
   @Mock
   private RootCauseRepository rootCauseRepository;
   @InjectMocks
-  private TicketManagerService ticketManagerService;
+  private TicketService ticketService;
 
 
 
@@ -46,7 +44,7 @@ public class TicketManagerServiceTest {
   public void getTicketIfExistResourceNotFoundTest(){
     when(ticketRepository.findById(anyLong())).thenReturn(Optional.empty());
     assertThatExceptionOfType(ResourceNotFoundException.class).isThrownBy(() ->{
-      ticketManagerService.getTicketIfExist(1L);
+      ticketService.getTicketIfExist(1L);
     });
   }
 
@@ -55,7 +53,7 @@ public class TicketManagerServiceTest {
     Ticket ticket = new Ticket();
     ticket.setId(1L);
     when(ticketRepository.findById(anyLong())).thenReturn(Optional.of(ticket));
-    assertThat(ticketManagerService.getTicketIfExist(1L)).isEqualTo(ticket);
+    assertThat(ticketService.getTicketIfExist(1L)).isEqualTo(ticket);
   }
 
 
@@ -65,7 +63,7 @@ public class TicketManagerServiceTest {
     TicketCreationRequest createdTicket = new TicketCreationRequest("provider", "description", 0L, "createdBy", customers);
     when(problemRepository.findById(anyLong())).thenReturn(Optional.empty());
     assertThatExceptionOfType(ResourceNotFoundException.class).isThrownBy(() ->{
-      ticketManagerService.submitTicket(createdTicket);
+      ticketService.submitTicket(createdTicket);
     });
   }
 
@@ -77,14 +75,14 @@ public class TicketManagerServiceTest {
     when(ticketRepository.findTicketByProblemAndProviderAndCreatedBy(ArgumentMatchers.any(Problem.class), anyString(), anyString()))
         .thenReturn(new Ticket());
     assertThatExceptionOfType(ResourceAlreadyExistException.class).isThrownBy(() ->{
-      ticketManagerService.submitTicket(createdTicket);
+      ticketService.submitTicket(createdTicket);
     });
   }
 
   @Test
   public void moveToReadyRootCauseNotFoundTest(){
     assertThatExceptionOfType(ResourceNotFoundException.class).isThrownBy(() ->{
-      ticketManagerService.moveTicketToReady(1L, 1L);
+      ticketService.moveTicketToReady(1L, 1L);
     });
   }
 
@@ -92,7 +90,7 @@ public class TicketManagerServiceTest {
   public void moveToReadyTicketNotFoundTest(){
     when(ticketRepository.findById(anyLong())).thenReturn(Optional.empty());
     assertThatExceptionOfType(ResourceNotFoundException.class).isThrownBy(() ->{
-      ticketManagerService.moveTicketToReady(1L, 1L);
+      ticketService.moveTicketToReady(1L, 1L);
     });
   }
 
@@ -102,7 +100,7 @@ public class TicketManagerServiceTest {
     ticket.setStatus(Status.CLOSED.getStatus());
     when(ticketRepository.findById(anyLong())).thenReturn(Optional.of(ticket));
     assertThatExceptionOfType(ChangeStatusException.class).isThrownBy(() ->{
-      ticketManagerService.moveTicketToReady(1L, 1L);
+      ticketService.moveTicketToReady(1L, 1L);
     });
   }
 

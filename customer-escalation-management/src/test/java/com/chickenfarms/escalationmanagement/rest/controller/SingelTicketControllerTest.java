@@ -1,12 +1,8 @@
 package com.chickenfarms.escalationmanagement.rest.controller;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import com.chickenfarms.escalationmanagement.model.dto.TicketCreationRequest;
-import com.chickenfarms.escalationmanagement.model.entity.Problem;
-import com.chickenfarms.escalationmanagement.model.entity.Ticket;
 import com.chickenfarms.escalationmanagement.rest.service.CustomerService;
-import com.chickenfarms.escalationmanagement.rest.service.TicketManagerService;
+import com.chickenfarms.escalationmanagement.rest.service.TicketService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -15,7 +11,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -23,8 +18,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 
-@WebMvcTest(controllers = TicketController.class)
-public class TicketControllerTest {
+@WebMvcTest(controllers = SingelTicketController.class)
+public class SingelTicketControllerTest {
 
   @Autowired
   private MockMvc mockMvc;
@@ -32,11 +27,11 @@ public class TicketControllerTest {
   private ObjectMapper objectMapper;
 
   @MockBean
-  private TicketManagerService ticketManagerService;
+  private TicketService ticketService;
   @MockBean
   private CustomerService customerService;
   @InjectMocks
-  private TicketController ticketController;
+  private SingelTicketController singelTicketController;
 
 
   @Test

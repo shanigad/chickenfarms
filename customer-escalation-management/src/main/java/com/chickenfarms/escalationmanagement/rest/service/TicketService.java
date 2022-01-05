@@ -5,7 +5,9 @@ import com.chickenfarms.escalationmanagement.exception.ChangeStatusException;
 import com.chickenfarms.escalationmanagement.exception.ResourceAlreadyExistException;
 import com.chickenfarms.escalationmanagement.exception.ResourceNotFoundException;
 import com.chickenfarms.escalationmanagement.model.dto.CloseTicketRequest;
+import com.chickenfarms.escalationmanagement.model.dto.PostCommentRequest;
 import com.chickenfarms.escalationmanagement.model.dto.TicketCreationRequest;
+import com.chickenfarms.escalationmanagement.model.entity.Comment;
 import com.chickenfarms.escalationmanagement.model.entity.Problem;
 import com.chickenfarms.escalationmanagement.model.entity.RootCause;
 import com.chickenfarms.escalationmanagement.model.entity.Tag;
@@ -21,10 +23,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class TicketManagerService {
+public class TicketService {
 
   private final CustomerService customerService;
   private final TagService tagService;
+  private final CommentService commentService;
 
   private final TicketRepository ticketRepository;
   private final ProblemRepository problemRepository;
@@ -72,6 +75,13 @@ public class TicketManagerService {
     }
   }
 
+
+  public Ticket postComment(Long ticketId, PostCommentRequest postCommentRequest){
+    Ticket ticket = getTicketIfExist(ticketId);
+    Comment comment = commentService.postComment(postCommentRequest, ticket);
+    ticket.addComment(comment);
+    return saveToRepository(ticket);
+  }
 
   @Transactional
   void saveReconciledTickets(Ticket ticket, Ticket readyTicket) {

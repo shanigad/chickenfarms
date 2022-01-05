@@ -1,5 +1,6 @@
 package com.chickenfarms.escalationmanagement.model.entity;
 
+import com.chickenfarms.escalationmanagement.model.dto.PostCommentRequest;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,27 +12,43 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 @Entity
 @Table(name = "comment")
 public class Comment {
 
   @Id
   @GeneratedValue(strategy= GenerationType.AUTO)
+  @Column(name = "comment_id", nullable = false)
   private Long id;
   @Column(name = "created_by")
   private String createdBy;
   @Column(name = "created_date")
-  @CreatedDate
   private Date createdDate;
   @Column(name = "content")
   private String content;
   @ManyToOne
   @JoinColumn(name="ticket_id", nullable=false)
   private Ticket ticket;
+
+
+  public Comment(PostCommentRequest postCommentRequest){
+    content = postCommentRequest.getComment();
+    createdBy = postCommentRequest.getCreatedBy();
+    createdDate = new Date();
+  }
+
+  @Override
+  public String toString(){
+    return getCreatedDate().getTime() + " " +getCreatedBy() + ": " + getContent();
+  }
+
 }

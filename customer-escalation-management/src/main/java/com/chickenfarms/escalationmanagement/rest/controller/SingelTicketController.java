@@ -1,51 +1,42 @@
 package com.chickenfarms.escalationmanagement.rest.controller;
 
 import com.chickenfarms.escalationmanagement.model.dto.CloseTicketRequest;
-import com.chickenfarms.escalationmanagement.model.dto.TicketCreationRequest;
+import com.chickenfarms.escalationmanagement.model.dto.PostCommentRequest;
 import com.chickenfarms.escalationmanagement.model.dto.TicketDto;
 import com.chickenfarms.escalationmanagement.model.dto.TicketUpdateRequest;
 import com.chickenfarms.escalationmanagement.model.entity.Ticket;
 import com.chickenfarms.escalationmanagement.rest.service.CustomerService;
-import com.chickenfarms.escalationmanagement.rest.service.TicketManagerService;
+import com.chickenfarms.escalationmanagement.rest.service.TicketService;
 import java.util.ArrayList;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 
 @RestController
 @RequiredArgsConstructor
-public class TicketController {
+public class SingelTicketController {
 
-  private final TicketManagerService ticketManagerService;
+  private final TicketService ticketService;
   private final CustomerService customerService;
 
   @GetMapping("/ticket/{id}")
   public TicketDto getTicket(@PathVariable Long id){
-    return new TicketDto(ticketManagerService.getTicketIfExist(id));
+    return new TicketDto(ticketService.getTicketIfExist(id));
   }
 
   @GetMapping("/ticket/{id}/customers")
   public ArrayList<Long> getCustomersByTicketTicket(@PathVariable Long id){
-    Ticket ticket = ticketManagerService.getTicketIfExist(id);
+    Ticket ticket = ticketService.getTicketIfExist(id);
     return customerService.getCustomersByTicket(ticket);
   }
 
-  @PostMapping("/ticket")
-  @ResponseStatus(HttpStatus.CREATED)
-  public String createTicket(@Valid @RequestBody TicketCreationRequest ticketCreationRequest){
-    return "Ticket successfully created with id: " + ticketManagerService.submitTicket(
-        ticketCreationRequest);
-  }
 
   @PostMapping("/ticket/{id}/split/{rootCauseId}")
   public String splitTicket(@PathVariable Long id, @PathVariable Long rootCauseId){
@@ -60,8 +51,15 @@ public class TicketController {
 
   @PostMapping("/ticket/{id}/tag")
   public String addTagToTicket(@PathVariable Long id, @RequestParam String tagName){
-    Ticket t = ticketManagerService.addTagToTicket(id, tagName);
+    Ticket t = ticketService.addTagToTicket(id, tagName);
     return "Tag " + tagName + " successfully added to Ticket " + id + " ticket = " + t ;
+  }
+
+  @PostMapping("/ticket/{id}/comment")
+  public TicketDto postComment(@PathVariable Long id, @RequestBody
+      PostCommentRequest postCommentRequest){
+    Ticket ticket = ticketService.postComment(id, postCommentRequest);
+    return new TicketDto(ticket);
   }
 
   @PutMapping("/ticket/{id}")
@@ -78,7 +76,7 @@ public class TicketController {
 
   @PutMapping("/ticket/{ticketId}/ready/{rootCauseId}")
   public Long updateTicketToReady(@PathVariable Long ticketId, @PathVariable Long rootCauseId){
-    return ticketManagerService.moveTicketToReady(ticketId, rootCauseId);
+    return ticketService.moveTicketToReady(ticketId, rootCauseId);
   }
 
   @PutMapping("/ticket/{id}/close")
