@@ -2,7 +2,6 @@ package com.chickenfarms.escalationmanagement.rest.service;
 
 
 import com.chickenfarms.escalationmanagement.exception.ResourceAlreadyExistException;
-import com.chickenfarms.escalationmanagement.model.dto.BORequest;
 import com.chickenfarms.escalationmanagement.model.entity.Tag;
 import com.chickenfarms.escalationmanagement.repository.TagRepository;
 import java.util.Optional;

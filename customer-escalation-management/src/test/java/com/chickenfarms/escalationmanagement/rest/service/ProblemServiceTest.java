@@ -9,7 +9,7 @@ import static org.mockito.Mockito.when;
 
 import com.chickenfarms.escalationmanagement.exception.ResourceAlreadyExistException;
 import com.chickenfarms.escalationmanagement.exception.ResourceNotFoundException;
-import com.chickenfarms.escalationmanagement.model.dto.BORequest;
+import com.chickenfarms.escalationmanagement.model.payload.BORequest;
 import com.chickenfarms.escalationmanagement.model.entity.Problem;
 import com.chickenfarms.escalationmanagement.repository.ProblemRepository;
 import java.util.Optional;

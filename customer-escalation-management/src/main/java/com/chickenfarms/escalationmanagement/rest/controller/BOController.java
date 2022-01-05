@@ -1,9 +1,8 @@
 package com.chickenfarms.escalationmanagement.rest.controller;
 
-import com.chickenfarms.escalationmanagement.model.dto.BORequest;
+import com.chickenfarms.escalationmanagement.model.payload.BORequest;
 import com.chickenfarms.escalationmanagement.model.entity.Problem;
 import com.chickenfarms.escalationmanagement.model.entity.Tag;
-import com.chickenfarms.escalationmanagement.repository.ProblemRepository;
 import com.chickenfarms.escalationmanagement.rest.service.ProblemService;
 import com.chickenfarms.escalationmanagement.rest.service.TagService;
 import java.util.List;

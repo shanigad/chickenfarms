@@ -1,4 +1,4 @@
-package com.chickenfarms.escalationmanagement.model.dto;
+package com.chickenfarms.escalationmanagement.model.payload;
 
 import com.chickenfarms.escalationmanagement.model.entity.Problem;
 import com.chickenfarms.escalationmanagement.model.entity.RootCause;
@@ -28,6 +28,7 @@ public class TicketResponse {
 //  private Set<Long> customers;
 
   public TicketResponse(Ticket ticket) {
+    if(ticket == null) return;
     this.number = ticket.getId();
     this.description = ticket.getDescription();
     this.provider = ticket.getProvider();
@@ -58,7 +59,7 @@ public class TicketResponse {
   }
 
   private void setRootCause(RootCause rc) {
-    this.rootCause = rc == null? "": rc.getName();
+    this.rootCause = rc == null? null: rc.getName();
   }
 
 }

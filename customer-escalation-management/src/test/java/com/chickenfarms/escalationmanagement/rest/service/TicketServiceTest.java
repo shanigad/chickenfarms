@@ -10,11 +10,9 @@ import com.chickenfarms.escalationmanagement.enums.Status;
 import com.chickenfarms.escalationmanagement.exception.ChangeStatusException;
 import com.chickenfarms.escalationmanagement.exception.ResourceAlreadyExistException;
 import com.chickenfarms.escalationmanagement.exception.ResourceNotFoundException;
-import com.chickenfarms.escalationmanagement.model.dto.TicketCreationRequest;
+import com.chickenfarms.escalationmanagement.model.payload.TicketCreationRequest;
 import com.chickenfarms.escalationmanagement.model.entity.Problem;
 import com.chickenfarms.escalationmanagement.model.entity.Ticket;
-import com.chickenfarms.escalationmanagement.repository.ProblemRepository;
-import com.chickenfarms.escalationmanagement.repository.RootCauseRepository;
 import com.chickenfarms.escalationmanagement.repository.TicketRepository;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -56,19 +54,6 @@ public class TicketServiceTest {
     ticket.setId(1L);
     when(ticketRepository.findById(anyLong())).thenReturn(Optional.of(ticket));
     assertThat(ticketService.getTicketIfExist(1L)).isEqualTo(ticket);
-  }
-
-
-  @Test
-  public void SubmitTicketDuplicateTest(){
-    Long[] customers = {125L};
-    TicketCreationRequest createdTicket = new TicketCreationRequest("provider", "description", 0L, "createdBy", customers);
-    when(problemService.getProblemIfExist(anyLong())).thenReturn(new Problem());
-    when(ticketRepository.findTicketByProblemAndProviderAndCreatedBy(ArgumentMatchers.any(Problem.class), anyString(), anyString()))
-        .thenReturn(new Ticket());
-    assertThatExceptionOfType(ResourceAlreadyExistException.class).isThrownBy(() ->{
-      ticketService.submitTicket(createdTicket);
-    });
   }
 
   @Test

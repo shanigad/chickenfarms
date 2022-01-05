@@ -1,4 +1,4 @@
-package com.chickenfarms.escalationmanagement.model.dto;
+package com.chickenfarms.escalationmanagement.model.payload;
 
 import javax.validation.ValidationException;
 import lombok.Getter;

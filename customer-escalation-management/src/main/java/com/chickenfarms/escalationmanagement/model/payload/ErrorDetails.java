@@ -1,4 +1,4 @@
-package com.chickenfarms.escalationmanagement.model.dto;
+package com.chickenfarms.escalationmanagement.model.payload;
 
 import java.util.Date;
 

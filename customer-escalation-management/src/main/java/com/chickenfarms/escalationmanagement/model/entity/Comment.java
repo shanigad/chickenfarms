@@ -1,6 +1,6 @@
 package com.chickenfarms.escalationmanagement.model.entity;
 
-import com.chickenfarms.escalationmanagement.model.dto.PostCommentRequest;
+import com.chickenfarms.escalationmanagement.model.payload.PostCommentRequest;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Date;
 import javax.persistence.Column;
@@ -12,11 +12,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.CreatedDate;
 
 @AllArgsConstructor
 @NoArgsConstructor

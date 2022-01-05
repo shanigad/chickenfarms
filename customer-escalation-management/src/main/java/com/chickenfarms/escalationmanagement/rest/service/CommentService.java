@@ -1,14 +1,15 @@
 package com.chickenfarms.escalationmanagement.rest.service;
 
-import com.chickenfarms.escalationmanagement.model.dto.PostCommentRequest;
+import com.chickenfarms.escalationmanagement.model.payload.PostCommentRequest;
+import com.chickenfarms.escalationmanagement.model.payload.TicketComments;
 import com.chickenfarms.escalationmanagement.model.entity.Comment;
 import com.chickenfarms.escalationmanagement.model.entity.Ticket;
 import com.chickenfarms.escalationmanagement.repository.CommentRepository;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -28,8 +29,11 @@ public class CommentService {
   }
 
 
-  public Page<Comment> getTicketComments(Ticket ticket, int page){
-    return commentRepository.getAllByTicket(ticket, PageRequest.of(page, 5));
+  public TicketComments getTicketComments(Ticket ticket, int page){
+    Page<Comment> commentsPage = commentRepository.getAllByTicket(ticket, PageRequest.of(page, 5));
+    List<String> comments = new ArrayList<>();
+    commentsPage.forEach(comment -> comments.add(comment.toString()));
+    return new TicketComments(ticket.getId(),page, comments);
   }
 
 }

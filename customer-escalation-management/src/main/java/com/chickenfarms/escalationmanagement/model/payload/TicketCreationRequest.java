@@ -1,4 +1,4 @@
-package com.chickenfarms.escalationmanagement.model.dto;
+package com.chickenfarms.escalationmanagement.model.payload;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;

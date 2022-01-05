@@ -18,7 +18,7 @@ public class Problem {
 
   @Id
   @GeneratedValue(strategy= GenerationType.AUTO)
-  @Column(name = "problem_id", nullable = false)
+  @Column(name = "problem_id")
   private Long id;
   @Column(name = "name", nullable = false)
   private String name;

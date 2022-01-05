@@ -1,16 +1,13 @@
 package com.chickenfarms.escalationmanagement.rest.controller;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.chickenfarms.escalationmanagement.model.dto.TicketCreationRequest;
-import com.chickenfarms.escalationmanagement.rest.service.CustomerService;
+import com.chickenfarms.escalationmanagement.model.payload.TicketCreationRequest;
+import com.chickenfarms.escalationmanagement.model.payload.TicketFilterRequest;
 import com.chickenfarms.escalationmanagement.rest.service.EscalationsManagerService;
-import com.chickenfarms.escalationmanagement.rest.service.TicketService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -18,19 +15,25 @@ import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(controllers = EscalationsManagerController.class)
 class EscalationsManagerControllerTest {
+
   @Autowired
   private MockMvc mockMvc;
   @Autowired
   private ObjectMapper objectMapper;
 
   @MockBean
-  private TicketService ticketService;
-  @MockBean
-  private  EscalationsManagerService escalationsManagerService;
-  @MockBean
-  private CustomerService customerService;
-  @InjectMocks
-  private EscalationsManagerController escalationsManagerController;
+  private EscalationsManagerService escalationsManagerService;
+
+
+  @Test
+  public void whenValidUrlAndMethodAndContentType_thenReturns200() throws Exception {
+
+    TicketFilterRequest ticketFilterRequest = new TicketFilterRequest(null, null, null, null, null);
+    mockMvc.perform(get("/escalation-management/tickets/filter/0")
+            .contentType("application/json")
+            .content(objectMapper.writeValueAsString(ticketFilterRequest)))
+        .andExpect(status().isOk());
+  }
 
   @Test
   public void whenValidUrlAndMethodAndContentTypeAndInput_thenReturns201() throws Exception {

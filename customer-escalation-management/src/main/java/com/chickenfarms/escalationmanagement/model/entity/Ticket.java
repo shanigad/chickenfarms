@@ -1,7 +1,7 @@
 package com.chickenfarms.escalationmanagement.model.entity;
 
 import com.chickenfarms.escalationmanagement.enums.Status;
-import com.chickenfarms.escalationmanagement.model.dto.TicketCreationRequest;
+import com.chickenfarms.escalationmanagement.model.payload.TicketCreationRequest;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.Date;
 import java.util.HashSet;
@@ -21,7 +21,6 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.CreatedDate;
 
 @Getter
 @Setter
