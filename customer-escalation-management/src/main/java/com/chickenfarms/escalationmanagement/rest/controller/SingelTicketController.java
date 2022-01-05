@@ -68,12 +68,10 @@ public class SingelTicketController {
   }
 
   @PostMapping("/ticket/{id}/comment")
-  public Comment postComment(@PathVariable Long id, @RequestBody
+  public String postComment(@PathVariable Long id, @RequestBody
       PostCommentRequest postCommentRequest){
     Ticket ticket = ticketService.getTicketIfExist(id);
-     return commentService.postComment(postCommentRequest, ticket);
-//    Ticket ticket = ticketService.postComment(id, postCommentRequest);
-//    return new TicketResponse(ticket);
+     return commentService.postComment(postCommentRequest, ticket).toString();
   }
 
   @PutMapping("/ticket/{id}")
