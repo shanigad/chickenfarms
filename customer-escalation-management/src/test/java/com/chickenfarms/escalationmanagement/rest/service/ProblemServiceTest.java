@@ -9,7 +9,7 @@ import static org.mockito.Mockito.when;
 
 import com.chickenfarms.escalationmanagement.exception.ResourceAlreadyExistException;
 import com.chickenfarms.escalationmanagement.exception.ResourceNotFoundException;
-import com.chickenfarms.escalationmanagement.model.payload.BORequest;
+import com.chickenfarms.escalationmanagement.model.payload.CreateCommentRequest;
 import com.chickenfarms.escalationmanagement.model.entity.Problem;
 import com.chickenfarms.escalationmanagement.repository.ProblemRepository;
 import java.util.Optional;
@@ -34,13 +34,13 @@ class ProblemServiceTest {
     problem.setId(1L);
     when(problemRepository.findProblemByName(anyString())).thenReturn(Optional.of(problem));
     assertThatExceptionOfType(ResourceAlreadyExistException.class).isThrownBy(() -> {
-      problemService.createProblem(new BORequest("problem"));
+      problemService.createProblem(new CreateCommentRequest("problem"));
     });
   }
 
   @Test
   void createProblemTest() {
-    BORequest payload = new BORequest("test");
+    CreateCommentRequest payload = new CreateCommentRequest("test");
     Problem problem = new Problem();
     problem.setName(payload.getName());
     problem.setId(1L);
