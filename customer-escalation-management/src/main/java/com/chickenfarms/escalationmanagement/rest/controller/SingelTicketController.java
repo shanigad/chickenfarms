@@ -59,7 +59,7 @@ public class SingelTicketController {
   @PostMapping("/tag")
   public ResponsePayload addTagToTicket(@PathVariable Long id, @RequestParam String tagName){
     Ticket ticket = ticketService.addTagToTicket(id, tagName);
-    return new ResponsePayload("Tag " + tagName + " successfully added to Ticket number" + id, ticket);
+    return new ResponsePayload("Tag added successfully",  new TicketResponse(ticket));
   }
 
   @PostMapping("/comment")
@@ -68,6 +68,14 @@ public class SingelTicketController {
     Ticket ticket = ticketService.getTicketIfExist(id);
     Comment comment = commentService.postComment(postCommentRequest, ticket);
      return new ResponsePayload("Posted comment " + comment + " to Ticket number " + id, comment);
+  }
+
+  @PostMapping("/customer/{customerId}")
+  public ResponsePayload addCustomer(@PathVariable Long id, @PathVariable Long customerId){
+    ResponsePayload responsePayload = new ResponsePayload("Customer added successfully",
+        new TicketResponse(ticketService.addCustomer(id, customerId)));
+    responsePayload.addToContext(ticketService.getTicketCustomers(id));
+    return responsePayload;
   }
 
   @PutMapping("")

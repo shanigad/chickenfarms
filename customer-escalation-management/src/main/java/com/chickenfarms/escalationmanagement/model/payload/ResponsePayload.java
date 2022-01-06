@@ -16,4 +16,9 @@ public class ResponsePayload {
     this.context = new ArrayList<>();
     this.context.add(context);
   }
+
+  public void addToContext( Object moreContext){
+    this.context.add(moreContext);
+  }
+
 }

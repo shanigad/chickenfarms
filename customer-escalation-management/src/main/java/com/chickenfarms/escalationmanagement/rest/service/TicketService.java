@@ -11,6 +11,7 @@ import com.chickenfarms.escalationmanagement.model.entity.RootCause;
 import com.chickenfarms.escalationmanagement.model.entity.Tag;
 import com.chickenfarms.escalationmanagement.model.entity.Ticket;
 import com.chickenfarms.escalationmanagement.repository.TicketRepository;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,7 @@ public class TicketService {
   private final TagService tagService;
   private final ProblemService problemService;
   private final RootCauseService rootCauseService;
-
+  private final CustomerService customerService;
 
   public Ticket getTicketIfExist(Long id){
     return ticketRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Ticket", "id", String.valueOf(id)));
@@ -89,6 +90,19 @@ public class TicketService {
     splitTicket = moveTicketToReady(splitTicket.getId(), rootCause.getId());
     return splitTicket;
   }
+
+  public Ticket addCustomer(Long id, Long customerId){
+    Ticket ticket = getTicketIfExist(id);
+    customerService.attachCustomerToTicket(customerId, ticket, null);
+    ticket = ticketUtils.saveToRepository(ticket);
+    return ticket;
+  }
+
+  public ArrayList<Long> getTicketCustomers(Long id){
+    Ticket ticket = getTicketIfExist(id);
+    return customerService.getCustomersByTicket(ticket);
+  }
+
 
     @Transactional
   void saveReconciledTickets(Ticket ticket, Ticket readyTicket) {

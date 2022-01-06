@@ -20,12 +20,17 @@ public class CustomerService {
   }
 
   public void attachCustomersToTicket(Long[] customers, Ticket ticket, Date createdDate) {
-    CustomerTicket customerTicket;
     for (Long c: customers) {
-//      if(c.equals(123L)) throw new ResourceNotFoundException("Ticket", "id", "Test");
-      customerTicket = new CustomerTicket(c, ticket, createdDate);
-      customerTicketRepository.save(customerTicket);
+      attachCustomerToTicket(c, ticket, createdDate);
     }
+  }
+
+  public void attachCustomerToTicket(Long customerId, Ticket ticket, Date addedDate) {
+    if(addedDate == null){
+      addedDate = new Date();
+    }
+    CustomerTicket customerTicket = new CustomerTicket(customerId, ticket, addedDate);
+    customerTicketRepository.save(customerTicket);
   }
 
   public ArrayList<Long> getCustomersByTicket(Ticket ticket){
@@ -33,7 +38,6 @@ public class CustomerService {
     ArrayList<Long> customers = new ArrayList<>();
     customerTicketRepository.findCustomerTicketByTicket(ticket).forEach(
         customerTicket -> customers.add(customerTicket.getCustomerId()));
-
     return customers;
   }
 }
