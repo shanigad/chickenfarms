@@ -2,7 +2,7 @@ INSERT IGNORE INTO problem (problem_id,name) VALUES (101,'General Error'),
                                             (102,'Missing Chicken'),
                                             (103,'Invalid Chicken'),
                                             (104,'Wrong Chicken'),
-                                            (105,'Broken Egg!');
+                                            (105,'Broken Egg');
 
 INSERT IGNORE INTO root_cause (rc_id,name) VALUES (201,'Chicken is dead'),
                                             (202,'Farm is closed'),
