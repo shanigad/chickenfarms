@@ -43,7 +43,11 @@ public class EscalationsManagerController {
 
   @GetMapping("/tickets/next")
   public ResponsePayload getNextTicket(){
-    return null;
+    Ticket ticket = escalationsManagerService.getNextTicket();
+    if(ticket == null){
+      return new ResponsePayload("No Ready tickets");
+    }
+    return new ResponsePayload("Kill them!", new TicketResponse(ticket));
   }
 
   @GetMapping("/tickets/filter/{page}")

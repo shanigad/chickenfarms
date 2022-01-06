@@ -20,7 +20,6 @@ public class TicketResponse {
   private String description;
   private String provider;
   private String createdBy;
-//  private Date creationDate;
   private Date lastModifiedDate;
   private String status;
   private String problem;
@@ -28,7 +27,6 @@ public class TicketResponse {
   private boolean isResolved;
   private Date closedDate;
   private Set<String> tags =  new HashSet<>();
-//  private Set<Long> customers;
 
   public TicketResponse(Ticket ticket) {
     if(ticket == null) return;
@@ -36,7 +34,6 @@ public class TicketResponse {
     this.description = ticket.getDescription();
     this.provider = ticket.getProvider();
     this.createdBy = ticket.getCreatedBy();
-//    this.createdDate = ticket.getCreationDate();
     this.lastModifiedDate = ticket.getLastModifiedDate();
     this.status = ticket.getStatus();
     this.isResolved = ticket.isResolved();
@@ -45,17 +42,11 @@ public class TicketResponse {
     this.rootCause = ticket.getProblem() == null?null:ticket.getProblem().getName();
     this.rootCause = ticket.getRootCause() == null?null:ticket.getRootCause().getName();
     setTags(ticket.getTags());
-//    setCustomers(ticket.getCustomers());
   }
-
 
   private void setTags(Set<Tag> tags) {
      tags.stream().forEach(tag -> this.tags.add(tag.getName()));
   }
-//  public void setCustomers(Set<CustomerTicket> customers) {
-//    this.customers = new HashSet<>();
-//     customers.stream().forEach(c -> this.customers.add(c.getCustomerId()));
-//  }
 
 
 }

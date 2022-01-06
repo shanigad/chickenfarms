@@ -7,6 +7,7 @@ public enum Status {
   CREATED("Created"),
   READY("Ready"),
   CLOSED("Closed"),
+  IN_PROGRESS("Progress"),
   RECONCILED("Reconciled");
 
 

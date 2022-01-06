@@ -17,7 +17,12 @@ public class ResponsePayload {
     this.context.add(context);
   }
 
-  public void addToContext( Object moreContext){
+  public ResponsePayload(String message) {
+    this.message = message;
+    this.context = new ArrayList<>();
+  }
+
+  public void addToContext(Object moreContext){
     this.context.add(moreContext);
   }
 

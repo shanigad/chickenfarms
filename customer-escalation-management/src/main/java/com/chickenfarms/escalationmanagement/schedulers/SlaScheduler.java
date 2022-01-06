@@ -21,8 +21,7 @@ public class SlaScheduler {
 
   @Scheduled(cron = "@hourly")
   public void updateHourlySla(){
-    Date date = new Date();
-    List<Ticket> hourlyTickets = ticketRepository.findAllBySlaHourAndStatus(date.getHours(), Status.READY.getStatus());
+    List<Ticket> hourlyTickets = ticketRepository.findAllBySlaHourAndStatus( new Date().getHours(), Status.READY.getStatus());
     hourlyTickets.forEach(ticket -> ticketUtils.updateSla(ticket));
   }
 }

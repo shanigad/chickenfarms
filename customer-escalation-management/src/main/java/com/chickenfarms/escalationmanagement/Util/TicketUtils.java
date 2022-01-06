@@ -21,7 +21,7 @@ public class TicketUtils {
 
   public void updateSla(Ticket ticket){
     ticket.slaTicking();
-    if(ticket.getSla() == 0){
+    if(ticket.getSla() < 0){
       ticket.setOomlette(true);
     }
     saveToRepository(ticket);

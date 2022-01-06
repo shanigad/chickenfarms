@@ -125,9 +125,9 @@ public class Ticket {
     customers.add(customer);
   }
 
-  public void addCustomers(Set<CustomerTicket> customers){
-    this.customers.addAll(customers);
-  }
+//  public void addCustomers(Set<CustomerTicket> customers){
+//    this.customers.addAll(customers);
+//  }
 
   public void slaTicking(){
     sla =-1;

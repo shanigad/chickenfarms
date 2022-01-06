@@ -23,4 +23,5 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
   Page<Ticket> getAllByStatusAndProviderAndProblem(String status, String provider, Problem problem, Pageable pageable);
 
   List<Ticket> findAllBySlaHourAndStatus(int hour, String status);
+  List<Ticket> getTopByGradeAndStatus(String status);
 }
