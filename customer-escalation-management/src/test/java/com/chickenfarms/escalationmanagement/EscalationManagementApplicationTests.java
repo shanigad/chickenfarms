@@ -85,7 +85,7 @@ class EscalationManagementApplicationTests {
 
     ObjectMapper mapper = new ObjectMapper();
     TicketResponse ticketResponse = mapper.convertValue(createResponseEntity.getBody().getContext().get(0), TicketResponse.class);
-    Long ticketNumber = ticketResponse.getNumber();
+    Long ticketNumber = ticketResponse.getTicketNumber();
 
     //Move Ticket to Ready
     ResponseEntity<ResponsePayload>
@@ -110,11 +110,11 @@ class EscalationManagementApplicationTests {
     //Get Tickets
     ObjectMapper mapper = new ObjectMapper();
     TicketResponse ticketResponse = mapper.convertValue(createResponseEntity.getBody().getContext().get(0), TicketResponse.class);
-    Long ticketNumber = ticketResponse.getNumber();
+    Long ticketNumber = ticketResponse.getTicketNumber();
     ResponseEntity<TicketResponse> responseEntity = restTemplate.getForEntity(
         singelTicketUrl +ticketNumber, TicketResponse.class);
     assertEquals(OK, responseEntity.getStatusCode());
-    assertEquals(ticketNumber, responseEntity.getBody().getNumber());
+    assertEquals(ticketNumber, responseEntity.getBody().getTicketNumber());
 
 
   }
@@ -134,7 +134,7 @@ class EscalationManagementApplicationTests {
     TicketResponse ticketResponse =
         mapper.convertValue(createResponseEntity.getBody().getContext().get(0),
             TicketResponse.class);
-    Long ticketNumber = ticketResponse.getNumber();
+    Long ticketNumber = ticketResponse.getTicketNumber();
 
     //Move Ticket to Ready
     ResponseEntity<ResponsePayload>
@@ -146,7 +146,7 @@ class EscalationManagementApplicationTests {
     ticketResponse = mapper.convertValue(readyResponseEntity.getBody().getContext().get(0),
         TicketResponse.class);
     assertEquals("Ready", ticketResponse.getStatus());
-    ticketNumber = ticketResponse.getNumber();
+    ticketNumber = ticketResponse.getTicketNumber();
 
     //Close Ticket
     CloseTicketRequest closeTicketRequest = new CloseTicketRequest("Found new chicks",true);

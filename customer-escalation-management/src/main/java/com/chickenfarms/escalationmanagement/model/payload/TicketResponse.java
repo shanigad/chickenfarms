@@ -1,7 +1,5 @@
 package com.chickenfarms.escalationmanagement.model.payload;
 
-import com.chickenfarms.escalationmanagement.model.entity.Problem;
-import com.chickenfarms.escalationmanagement.model.entity.RootCause;
 import com.chickenfarms.escalationmanagement.model.entity.Tag;
 import com.chickenfarms.escalationmanagement.model.entity.Ticket;
 import java.util.Date;
@@ -18,7 +16,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TicketResponse {
-  private long number;
+  private long ticketNumber;
   private String description;
   private String provider;
   private String createdBy;
@@ -29,13 +27,12 @@ public class TicketResponse {
   private String rootCause;
   private boolean isResolved;
   private Date closedDate;
-
-  private Set<String> tags;
+  private Set<String> tags =  new HashSet<>();
 //  private Set<Long> customers;
 
   public TicketResponse(Ticket ticket) {
     if(ticket == null) return;
-    this.number = ticket.getId();
+    this.ticketNumber = ticket.getId();
     this.description = ticket.getDescription();
     this.provider = ticket.getProvider();
     this.createdBy = ticket.getCreatedBy();
@@ -53,7 +50,6 @@ public class TicketResponse {
 
 
   private void setTags(Set<Tag> tags) {
-    this.tags = new HashSet<>();
      tags.stream().forEach(tag -> this.tags.add(tag.getName()));
   }
 //  public void setCustomers(Set<CustomerTicket> customers) {
