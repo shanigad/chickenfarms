@@ -1,5 +1,6 @@
 package com.chickenfarms.escalationmanagement.rest.controller;
 
+import com.chickenfarms.escalationmanagement.enums.Status;
 import com.chickenfarms.escalationmanagement.model.payload.ResponsePayload;
 import com.chickenfarms.escalationmanagement.model.payload.TicketCreationRequest;
 import com.chickenfarms.escalationmanagement.model.payload.TicketResponse;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -45,8 +47,14 @@ public class EscalationsManagerController {
   }
 
   @GetMapping("/tickets/filter/{page}")
-  public TicketsResponse getTicketsByFilter(@RequestBody TicketFilterRequest ticketFilterRequest,
-                                            @PathVariable int page){
+  public TicketsResponse getTicketsByFilter(@PathVariable int page,
+                                            @RequestParam String status,
+                                            @RequestParam String tag,
+                                            @RequestParam String provider,
+                                            @RequestParam String problem,
+                                            @RequestParam String rootCause){
+    Long problemId = problem==null?null:Long.getLong(problem);
+    TicketFilterRequest ticketFilterRequest = new TicketFilterRequest(Status.fromValue(status), tag,provider,problemId, rootCause);
     Page<Ticket> tickets = escalationsManagerService.getFilteredTickets(ticketFilterRequest, page);
     List<TicketResponse> ticketsResponse = new ArrayList<>();
     if(tickets != null){

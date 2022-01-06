@@ -28,10 +28,8 @@ class EscalationsManagerControllerTest {
   @Test
   public void whenValidUrlAndMethodAndContentType_thenReturns200() throws Exception {
 
-    TicketFilterRequest ticketFilterRequest = new TicketFilterRequest(null, null, null, null, null);
-    mockMvc.perform(get("/escalation-management/tickets/filter/0")
-            .contentType("application/json")
-            .content(objectMapper.writeValueAsString(ticketFilterRequest)))
+    mockMvc.perform(get("/escalation-management/tickets/filter/0?status=Created&tag=null&provider=null&problem=1&rootCause=null")
+            .contentType("application/json"))
         .andExpect(status().isOk());
   }
 
