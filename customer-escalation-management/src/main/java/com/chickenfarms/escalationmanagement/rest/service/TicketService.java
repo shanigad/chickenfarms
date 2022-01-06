@@ -98,7 +98,7 @@ public class TicketService {
 
   private Ticket getReadyTicket(Ticket ticket, Long rootCauseId) {
     RootCause rootCause = rootCauseService.getRootCauseIfExist(rootCauseId);
-    Optional<Ticket> readyTicket = ticketRepository.findTicketByProviderAndRootCause(ticket.getProvider(), rootCause);
+    Optional<Ticket> readyTicket = ticketRepository.findTicketByProviderAndRootCauseAndStatus(ticket.getProvider(), rootCause, Status.READY.toString());
     //TODO  Move to TicketUtils
     if(readyTicket.isPresent() && Status.isReady(readyTicket.get().getStatus())){
       reconcileTickets(ticket, readyTicket.get());

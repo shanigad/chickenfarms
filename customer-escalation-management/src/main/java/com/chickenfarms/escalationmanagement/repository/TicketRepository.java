@@ -1,5 +1,6 @@
 package com.chickenfarms.escalationmanagement.repository;
 
+import com.chickenfarms.escalationmanagement.enums.Status;
 import com.chickenfarms.escalationmanagement.model.entity.Problem;
 import com.chickenfarms.escalationmanagement.model.entity.RootCause;
 import com.chickenfarms.escalationmanagement.model.entity.Ticket;
@@ -16,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public interface TicketRepository extends JpaRepository<Ticket, Long> {
   Ticket findTicketByProblemAndProviderAndCreatedBy(Problem problem, String provider, String createdBy);
-  Optional<Ticket> findTicketByProviderAndRootCause(String provider, RootCause rootCause);
+  Optional<Ticket> findTicketByProviderAndRootCauseAndStatus(String provider, RootCause rootCause, String status);
   @Query(value = "SELECT t FROM Ticket t WHERE (:status is null or t.status = :status) and (:provider is null"
       + " or t.provider = :provider) and (:problem is null or t.problem = :problem)")
   Page<Ticket> getAllByStatusAndProviderAndProblem(String status, String provider, Problem problem, Pageable pageable);

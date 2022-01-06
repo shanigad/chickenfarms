@@ -45,10 +45,10 @@ public class TicketResponse {
     this.isResolved = ticket.isResolved();
     this.closedDate = ticket.getClosedDate();
     this.problem = ticket.getProblem().getName();
-//    setProblem(ticket.getProblem());
+    this.rootCause = ticket.getProblem() == null?null:ticket.getProblem().getName();
+    this.rootCause = ticket.getRootCause() == null?null:ticket.getRootCause().getName();
     setTags(ticket.getTags());
 //    setCustomers(ticket.getCustomers());
-    setRootCause(ticket.getRootCause());
   }
 
 
@@ -61,12 +61,5 @@ public class TicketResponse {
 //     customers.stream().forEach(c -> this.customers.add(c.getCustomerId()));
 //  }
 
-//  private void setProblem(Problem problem) {
-//    this.problem = problem == null? "": problem.getName();
-//  }
-
-  private void setRootCause(RootCause rc) {
-    this.rootCause = rc == null? null: rc.getName();
-  }
 
 }
