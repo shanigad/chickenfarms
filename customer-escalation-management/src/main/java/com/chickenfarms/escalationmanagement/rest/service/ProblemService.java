@@ -2,10 +2,9 @@ package com.chickenfarms.escalationmanagement.rest.service;
 
 import com.chickenfarms.escalationmanagement.exception.ResourceAlreadyExistException;
 import com.chickenfarms.escalationmanagement.exception.ResourceNotFoundException;
-import com.chickenfarms.escalationmanagement.model.payload.BORequest;
+import com.chickenfarms.escalationmanagement.model.payload.CreateCommentRequest;
 import com.chickenfarms.escalationmanagement.model.entity.Problem;
 import com.chickenfarms.escalationmanagement.repository.ProblemRepository;
-import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,10 +15,10 @@ public class ProblemService {
 
   private final ProblemRepository problemRepository;
 
-  public Problem createProblem(BORequest boRequest){
-    handleDuplicateProblem(boRequest.getName());
+  public Problem createProblem(CreateCommentRequest createCommentRequest){
+    handleDuplicateProblem(createCommentRequest.getName());
     Problem problem = new Problem();
-    problem.setName(boRequest.getName());
+    problem.setName(createCommentRequest.getName());
     return saveProblem(problem);
   }
 
