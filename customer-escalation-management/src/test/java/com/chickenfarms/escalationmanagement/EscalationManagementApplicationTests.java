@@ -57,6 +57,7 @@ class EscalationManagementApplicationTests {
 
   @Test
   void shouldGetFilteredTickets() throws Exception {
+    //Create Ticket
     Long[] customers = {125L};
     TicketCreationRequest
         createdTicket1 = new TicketCreationRequest("filterProvider", "description", 101L, "Shani1", customers);
@@ -64,6 +65,7 @@ class EscalationManagementApplicationTests {
         escalationManagementUrl +"/ticket",createdTicket1, ResponsePayload.class);
     assertEquals(CREATED, createResponseEntity.getStatusCode());
 
+    //Get Tickets
     ResponseEntity<TicketsResponse>
         responseEntity=restTemplate.getForEntity(escalationManagementUrl +"/tickets/filter/0?status=Created&tag=null&provider=filterProvider&problem=1&rootCause=null" ,TicketsResponse.class);
     assertEquals(OK, responseEntity.getStatusCode());
@@ -73,6 +75,7 @@ class EscalationManagementApplicationTests {
 
   @Test
   void shouldMoveTicketToReady() throws Exception {
+    //Create Ticket
     Long[] customers = {123123L};
     TicketCreationRequest ticketCreationRequest = new TicketCreationRequest("Meshek kuku", "My chickens data is null", 102L, "Angry customer", customers);
     ResponseEntity<ResponsePayload>
@@ -84,6 +87,7 @@ class EscalationManagementApplicationTests {
     TicketResponse ticketResponse = mapper.convertValue(createResponseEntity.getBody().getContext().get(0), TicketResponse.class);
     Long ticketNumber = ticketResponse.getNumber();
 
+    //Move Ticket to Ready
     ResponseEntity<ResponsePayload>
         readyResponseEntity=restTemplate.exchange(singelTicketUrl +ticketNumber+"/ready/201", HttpMethod.PUT,null, ResponsePayload.class);
     assertEquals(OK, readyResponseEntity.getStatusCode());
@@ -95,6 +99,7 @@ class EscalationManagementApplicationTests {
 
   @Test
   void shouldGetCreatedTicket() throws Exception {
+    //Create Ticket
     Long[] customers = {123123L};
     TicketCreationRequest ticketCreationRequest = new TicketCreationRequest("Meshek kuku", "My chickens data is null", 102L, "Angry customer", customers);
     ResponseEntity<ResponsePayload>
@@ -102,10 +107,10 @@ class EscalationManagementApplicationTests {
         escalationManagementUrl +"/ticket",ticketCreationRequest, ResponsePayload.class);
     assertEquals(CREATED, createResponseEntity.getStatusCode());
 
+    //Get Tickets
     ObjectMapper mapper = new ObjectMapper();
     TicketResponse ticketResponse = mapper.convertValue(createResponseEntity.getBody().getContext().get(0), TicketResponse.class);
     Long ticketNumber = ticketResponse.getNumber();
-
     ResponseEntity<TicketResponse> responseEntity = restTemplate.getForEntity(
         singelTicketUrl +ticketNumber, TicketResponse.class);
     assertEquals(OK, responseEntity.getStatusCode());
@@ -155,4 +160,16 @@ class EscalationManagementApplicationTests {
     assertTrue( ticketResponse.isResolved());
   }
 
+  @Test
+  void shouldPostCommentAndViewComments() throws Exception {}
+  @Test
+  void shouldUpdateTicket() throws Exception {}
+  @Test
+  void shouldSplitTicket() throws Exception {}
+  @Test
+  void shouldAddExistingAndNoneExistingTag() throws Exception {}
+  @Test
+  void shouldAddAndGetCustomers() throws Exception {}
+  @Test
+  void shouldGetNextTicket() throws Exception {}
   }
