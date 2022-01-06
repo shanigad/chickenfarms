@@ -53,12 +53,12 @@ public class Ticket {
   private boolean isResolved;
   @Column(name = "sla")
   private int sla;
-  @Column(name = "ready_date")
-  private Date readyDate;
   @Column(name = "sla_hour")
   private int slaHour;
   @Column(name = "is_oomlette")
   private boolean isOomlette;
+  @Column(name = "grade")
+  private int grade;
   @ManyToOne
   @JoinColumn(name="problem_id")
   private Problem problem;

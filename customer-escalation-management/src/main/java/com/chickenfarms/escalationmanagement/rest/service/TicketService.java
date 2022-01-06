@@ -122,9 +122,9 @@ public class TicketService {
     ticket.setStatus(Status.READY.getStatus());
     ticket.setRootCause(rootCause);
     ticket.setSla(3);
-    ticket.setReadyDate(new Date());
+//    ticket.setReadyDate(new Date());
     // TODO change date
-    ticket.setSlaHour(ticket.getReadyDate().getHours());
+    ticket.setSlaHour(new Date().getHours());
     return ticketUtils.saveToRepository(ticket);
   }
 

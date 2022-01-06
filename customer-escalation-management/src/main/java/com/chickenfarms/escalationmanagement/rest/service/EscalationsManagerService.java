@@ -25,7 +25,7 @@ public class EscalationsManagerService {
 
   public Ticket submitTicket(TicketCreationRequest createdTicket){
     Problem problem = problemService.getProblemIfExist(createdTicket.getProblem());
-    handleDuplicateTicket(createdTicket, problem);
+//    handleDuplicateTicket(createdTicket, problem);
     return saveTicketAndCustomers(createdTicket, problem);
   }
 
