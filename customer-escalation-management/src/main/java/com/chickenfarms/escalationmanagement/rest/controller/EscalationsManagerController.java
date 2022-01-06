@@ -39,6 +39,11 @@ public class EscalationsManagerController {
 //    return null;
 //  }
 
+  @GetMapping("/tickets/next")
+  public ResponsePayload getNextTicket(){
+    return null;
+  }
+
   @GetMapping("/tickets/filter/{page}")
   public TicketsResponse getTicketsByFilter(@RequestBody TicketFilterRequest ticketFilterRequest,
                                             @PathVariable int page){

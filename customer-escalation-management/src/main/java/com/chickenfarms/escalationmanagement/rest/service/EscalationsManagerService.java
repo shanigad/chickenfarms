@@ -1,6 +1,6 @@
 package com.chickenfarms.escalationmanagement.rest.service;
 
-import com.chickenfarms.escalationmanagement.enums.Status;
+import com.chickenfarms.escalationmanagement.Util.TicketUtils;
 import com.chickenfarms.escalationmanagement.exception.ResourceAlreadyExistException;
 import com.chickenfarms.escalationmanagement.model.payload.TicketCreationRequest;
 import com.chickenfarms.escalationmanagement.model.payload.TicketFilterRequest;

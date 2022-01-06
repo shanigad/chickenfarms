@@ -1,11 +1,10 @@
 package com.chickenfarms.escalationmanagement.rest.service;
 
+import com.chickenfarms.escalationmanagement.Util.TicketUtils;
 import com.chickenfarms.escalationmanagement.enums.Status;
 import com.chickenfarms.escalationmanagement.exception.ChangeStatusException;
-import com.chickenfarms.escalationmanagement.exception.ResourceAlreadyExistException;
 import com.chickenfarms.escalationmanagement.exception.ResourceNotFoundException;
 import com.chickenfarms.escalationmanagement.model.payload.CloseTicketRequest;
-import com.chickenfarms.escalationmanagement.model.payload.TicketCreationRequest;
 import com.chickenfarms.escalationmanagement.model.payload.TicketUpdateRequest;
 import com.chickenfarms.escalationmanagement.model.entity.Problem;
 import com.chickenfarms.escalationmanagement.model.entity.RootCause;
@@ -86,8 +85,8 @@ public class TicketService {
     Ticket splitTicket = new Ticket(ticket);
     // create ticket and move customers from old one
     ticketUtils.saveToRepository(splitTicket);
-    splitTicket = moveTicketToReady(splitTicket.getId(), rootCause.getId());
     // set SLA to earliest Customer’s SLA from the original Ticket
+    splitTicket = moveTicketToReady(splitTicket.getId(), rootCause.getId());
     return splitTicket;
   }
 
@@ -122,6 +121,10 @@ public class TicketService {
   private Ticket updateTicketStatusToReady(Ticket ticket, RootCause rootCause) {
     ticket.setStatus(Status.READY.getStatus());
     ticket.setRootCause(rootCause);
+    ticket.setSla(3);
+    ticket.setReadyDate(new Date());
+    // TODO change date
+    ticket.setSlaHour(ticket.getReadyDate().getHours());
     return ticketUtils.saveToRepository(ticket);
   }
 

@@ -16,6 +16,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapsId;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.Getter;
@@ -31,8 +32,8 @@ import lombok.Setter;
 public class Ticket {
 
   @Id
-  @GeneratedValue(strategy= GenerationType.AUTO)
-  @Column(name = "ticket_id", unique = true, nullable = false)
+  @GeneratedValue(strategy= GenerationType.IDENTITY)
+  @Column(name = "ticket_id")
   private long id;
   @Column(name = "description")
   private String description;
@@ -50,7 +51,14 @@ public class Ticket {
   private Date closedDate;
   @Column(name = "is_resolved")
   private boolean isResolved;
-
+  @Column(name = "sla")
+  private int sla;
+  @Column(name = "ready_date")
+  private Date readyDate;
+  @Column(name = "sla_hour")
+  private int slaHour;
+  @Column(name = "is_oomlette")
+  private boolean isOomlette;
   @ManyToOne
   @JoinColumn(name="problem_id")
   private Problem problem;
@@ -79,6 +87,7 @@ public class Ticket {
     creationDate = new Date();
     lastModifiedDate = creationDate;
     isResolved = false;
+    isOomlette = false;
   }
 
   public Ticket(Ticket ticket) {
@@ -91,6 +100,7 @@ public class Ticket {
     creationDate = new Date();
     lastModifiedDate = creationDate;
     isResolved = false;
+//    isOomlette = false;
   }
 
 
@@ -119,6 +129,9 @@ public class Ticket {
     this.customers.addAll(customers);
   }
 
+  public void slaTicking(){
+    sla =-1;
+  }
 
 
 
