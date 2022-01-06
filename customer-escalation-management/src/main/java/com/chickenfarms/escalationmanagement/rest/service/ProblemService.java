@@ -23,10 +23,6 @@ public class ProblemService {
     return saveProblem(problem);
   }
 
-  public List<Problem> getProblems(){
-    return problemRepository.findAll();
-  }
-
   public Problem getProblemIfExist(Long id){
     return problemRepository.findById(id).
         orElseThrow(()-> new ResourceNotFoundException("Problem", "id", String.valueOf(id)));
