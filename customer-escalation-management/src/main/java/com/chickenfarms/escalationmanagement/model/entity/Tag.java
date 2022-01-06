@@ -23,8 +23,8 @@ import lombok.Data;
 @Table(name="tag")
 public class Tag {
   @Id
-  @GeneratedValue(strategy= GenerationType.AUTO)
-  @Column(name = "tag_id", nullable = false)
+  @GeneratedValue(strategy= GenerationType.IDENTITY)
+  @Column(name = "tag_id")
   private Long id;
   @Column(name = "name", nullable = false)
   private String name;

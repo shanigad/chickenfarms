@@ -25,8 +25,8 @@ import lombok.Setter;
 public class Comment {
 
   @Id
-  @GeneratedValue(strategy= GenerationType.AUTO)
-  @Column(name = "comment_id", nullable = false)
+  @GeneratedValue(strategy= GenerationType.IDENTITY)
+  @Column(name = "comment_id")
   private Long id;
   @Column(name = "created_by")
   private String createdBy;
