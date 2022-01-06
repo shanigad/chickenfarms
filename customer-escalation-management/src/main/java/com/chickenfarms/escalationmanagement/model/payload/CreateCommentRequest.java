@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class BORequest {
+public class CreateCommentRequest {
   @NotBlank(message = "name must not be empty")
   private String name;
 
