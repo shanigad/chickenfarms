@@ -26,6 +26,11 @@ public class ProblemService {
     return problemRepository.findById(id).
         orElseThrow(()-> new ResourceNotFoundException("Problem", "id", String.valueOf(id)));
   }
+
+  public Problem getProblemOrNull(Long problem) {
+    return problem!= null ? getProblemIfExist(problem) : null;
+  }
+
   private Problem saveProblem(Problem problem) {
     problem = problemRepository.save(problem);
     problemRepository.flush();

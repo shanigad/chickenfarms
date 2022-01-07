@@ -6,6 +6,7 @@ import com.chickenfarms.escalationmanagement.model.entity.RootCause;
 import com.chickenfarms.escalationmanagement.model.entity.Ticket;
 import java.util.List;
 import java.util.Optional;
+import org.hibernate.sql.Select;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -23,5 +24,6 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
   Page<Ticket> getAllByStatusAndProviderAndProblem(String status, String provider, Problem problem, Pageable pageable);
 
   List<Ticket> findAllBySlaHourAndStatus(int hour, String status);
-  List<Ticket> getTopByGradeAndStatus(String status);
+  @Query(value = "SELECT t FROM  Ticket t WHERE t.status = :status ORDER BY :grade DESC")
+  List<Ticket> getTopGradeByStatus(String status);
 }

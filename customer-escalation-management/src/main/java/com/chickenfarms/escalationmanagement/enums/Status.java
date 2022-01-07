@@ -1,5 +1,6 @@
 package com.chickenfarms.escalationmanagement.enums;
 
+import com.chickenfarms.escalationmanagement.model.payload.TicketFilterRequest;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import java.util.Arrays;
 
@@ -7,7 +8,6 @@ public enum Status {
   CREATED("Created"),
   READY("Ready"),
   CLOSED("Closed"),
-  IN_PROGRESS("Progress"),
   RECONCILED("Reconciled");
 
 
@@ -43,5 +43,9 @@ public enum Status {
 
   public static boolean isReconciled(String status){
     return RECONCILED.getStatus().equals(status);
+  }
+
+  public static String getStatusOrNull(Status status) {
+    return status != null ? status.getStatus() : null;
   }
 }

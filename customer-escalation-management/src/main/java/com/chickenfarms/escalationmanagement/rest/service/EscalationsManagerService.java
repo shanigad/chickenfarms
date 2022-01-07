@@ -3,12 +3,12 @@ package com.chickenfarms.escalationmanagement.rest.service;
 import com.chickenfarms.escalationmanagement.Util.TicketUtils;
 import com.chickenfarms.escalationmanagement.enums.Status;
 import com.chickenfarms.escalationmanagement.exception.ResourceAlreadyExistException;
+import com.chickenfarms.escalationmanagement.model.payload.PostCommentRequest;
 import com.chickenfarms.escalationmanagement.model.payload.TicketCreationRequest;
 import com.chickenfarms.escalationmanagement.model.payload.TicketFilterRequest;
 import com.chickenfarms.escalationmanagement.model.entity.Problem;
 import com.chickenfarms.escalationmanagement.model.entity.Ticket;
 import com.chickenfarms.escalationmanagement.repository.TicketRepository;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -33,17 +33,17 @@ public class EscalationsManagerService {
   }
 
   public Page<Ticket> getFilteredTickets(TicketFilterRequest ticketFilterRequest, int pageNum){
-    String status = getStatusOrNull(ticketFilterRequest);
-    Problem problem = getProblemOrNull(ticketFilterRequest);
+    String status = Status.getStatusOrNull(ticketFilterRequest.getStatus());
+    Problem problem = problemService.getProblemOrNull(ticketFilterRequest.getProblem());
     Page<Ticket> filteredTickets = ticketRepository.getAllByStatusAndProviderAndProblem(status, ticketFilterRequest.getProvider(), problem, PageRequest.of(pageNum, 5));
     return filteredTickets;
   }
 
   public Ticket getNextTicket(){
-    List<Ticket> topTickets = ticketRepository.getTopByGradeAndStatus(Status.READY.getStatus());
+    List<Ticket> topTickets = ticketRepository.getTopGradeByStatus(Status.READY.getStatus());
     if(topTickets.isEmpty()) return null;
     Ticket ticket = topTickets.get(0);
-    ticket.setStatus(Status.IN_PROGRESS.getStatus());
+    ticketUtils.postSystemCommentToTicket("Ticket in progress", ticket);
     ticket = ticketUtils.saveToRepository(ticket);
     return ticket;
   }
@@ -55,25 +55,6 @@ public class EscalationsManagerService {
     customerService.attachCustomersToTicket(createdTicket.getCustomers(), ticket, ticket.getCreationDate());
     return ticket;
   }
-
-  private Problem getProblemOrNull(TicketFilterRequest ticketFilterRequest) {
-    return ticketFilterRequest.getProblem() != null ?
-        problemService.getProblemIfExist(ticketFilterRequest.getProblem()) : null;
-  }
-
-  //TODO  Move to TicketUtils
-  private void handleDuplicateTicket(TicketCreationRequest createdTicket, Problem problem) {
-    //TODO - Add customers to validation
-    Ticket ticket = ticketRepository.findTicketByProblemAndProviderAndCreatedBy(problem, createdTicket.getProvider(), createdTicket.getCreatedBy());
-    if(ticket != null)
-      throw new ResourceAlreadyExistException("Ticket",  ticket.getId());
-  }
-
-  private String getStatusOrNull(TicketFilterRequest ticketFilterRequest) {
-    return ticketFilterRequest.getStatus() != null ? ticketFilterRequest.getStatus().getStatus() : null;
-  }
-
-
 
   private Ticket createTicket(TicketCreationRequest createdTicket, Problem problem) {
     Ticket ticket = new Ticket(createdTicket, problem);

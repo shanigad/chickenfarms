@@ -1,7 +1,9 @@
 package com.chickenfarms.escalationmanagement.Util;
 
 import com.chickenfarms.escalationmanagement.model.entity.Ticket;
+import com.chickenfarms.escalationmanagement.model.payload.PostCommentRequest;
 import com.chickenfarms.escalationmanagement.repository.TicketRepository;
+import com.chickenfarms.escalationmanagement.rest.service.CommentService;
 import java.util.Date;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 public class TicketUtils {
 
   private final TicketRepository ticketRepository;
+  private final CommentService commentService;
 
   public Ticket saveToRepository(Ticket ticket) {
     ticket.setLastModifiedDate(new Date());
@@ -25,6 +28,10 @@ public class TicketUtils {
       ticket.setOomlette(true);
     }
     saveToRepository(ticket);
+  }
+
+  public void postSystemCommentToTicket(String comment, Ticket ticket){
+    commentService.postComment(new PostCommentRequest(comment, "System"), ticket);
   }
 
 
