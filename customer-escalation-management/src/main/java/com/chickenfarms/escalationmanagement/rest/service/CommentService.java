@@ -19,8 +19,6 @@ public class CommentService {
   private final CommentRepository commentRepository;
 
   public Comment postComment(PostCommentRequest postCommentRequest, Ticket ticket){
-    // if Ticket not null
-    //handle duplicateComment?
     Comment comment = new Comment(postCommentRequest);
     comment.setTicket(ticket);
     comment = commentRepository.save(comment);
@@ -30,7 +28,7 @@ public class CommentService {
 
 
   public TicketComments getTicketComments(Ticket ticket, int page){
-    Page<Comment> commentsPage = commentRepository.getAllByTicket(ticket, PageRequest.of(page, 5));
+    Page<Comment> commentsPage = commentRepository.getAllByTicket(ticket, PageRequest.of(page, 10));
     List<String> comments = new ArrayList<>();
     commentsPage.forEach(comment -> comments.add(comment.toString()));
     return new TicketComments(ticket.getId(),page, comments);
