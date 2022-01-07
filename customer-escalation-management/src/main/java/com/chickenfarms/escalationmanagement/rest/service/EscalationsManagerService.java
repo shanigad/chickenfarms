@@ -2,8 +2,6 @@ package com.chickenfarms.escalationmanagement.rest.service;
 
 import com.chickenfarms.escalationmanagement.Util.TicketUtils;
 import com.chickenfarms.escalationmanagement.enums.Status;
-import com.chickenfarms.escalationmanagement.exception.ResourceAlreadyExistException;
-import com.chickenfarms.escalationmanagement.model.payload.PostCommentRequest;
 import com.chickenfarms.escalationmanagement.model.payload.TicketCreationRequest;
 import com.chickenfarms.escalationmanagement.model.payload.TicketFilterRequest;
 import com.chickenfarms.escalationmanagement.model.entity.Problem;
@@ -28,7 +26,6 @@ public class EscalationsManagerService {
 
   public Ticket submitTicket(TicketCreationRequest createdTicket){
     Problem problem = problemService.getProblemIfExist(createdTicket.getProblem());
-//    handleDuplicateTicket(createdTicket, problem);
     return saveTicketAndCustomers(createdTicket, problem);
   }
 
@@ -43,8 +40,7 @@ public class EscalationsManagerService {
     List<Ticket> topTickets = ticketRepository.getTopGradeByStatus(Status.READY.getStatus());
     if(topTickets.isEmpty()) return null;
     Ticket ticket = topTickets.get(0);
-    ticketUtils.postSystemCommentToTicket("Ticket in progress", ticket);
-    ticket = ticketUtils.saveToRepository(ticket);
+    ticket = ticketUtils.saveToRepository(ticket, "Ticket in progress");
     return ticket;
   }
 
@@ -58,7 +54,7 @@ public class EscalationsManagerService {
 
   private Ticket createTicket(TicketCreationRequest createdTicket, Problem problem) {
     Ticket ticket = new Ticket(createdTicket, problem);
-    return ticketUtils.saveToRepository(ticket);
+    return ticketUtils.saveToRepository(ticket, "Ticket was created");
   }
 
 }

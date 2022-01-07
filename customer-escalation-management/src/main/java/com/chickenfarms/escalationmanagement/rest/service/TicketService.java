@@ -39,7 +39,7 @@ public class TicketService {
       ticket.setStatus(Status.CLOSED.getStatus());
       ticket.setResolved(closeTicketRequest.isResolved());
       ticket.setClosedDate(new Date());
-      return ticketUtils.saveToRepository(ticket);
+      return ticketUtils.saveToRepository(ticket, "Ticket was closed");
     }
     else{
       throw new ChangeStatusException(Status.CLOSED.getStatus(), "You tried to change status from status " + ticket.getStatus() + " ,it is allowed only for tickets with status 'Ready'");
@@ -50,7 +50,7 @@ public class TicketService {
     Ticket ticket = getTicketIfExist(ticketId);
     Tag tag = tagService.getTagOrCreateIfMissing(tagName);
     ticket.addTag(tag);
-    return ticketUtils.saveToRepository(ticket);
+    return ticketUtils.saveToRepository(ticket, "Tag " +tagName + "was added to Ticket");
   }
 
   public Ticket moveTicketToReady(Long ticketId, Long rootCauseId){
@@ -72,7 +72,7 @@ public class TicketService {
       Problem problem = problemService.getProblemIfExist(updateRequest.getProblem());
       ticket.setProblem(problem);
     }
-    ticket = ticketUtils.saveToRepository(ticket);
+    ticket = ticketUtils.saveToRepository(ticket, "Ticket's description and or problem were updated");
     return ticket;
   }
 
@@ -85,7 +85,7 @@ public class TicketService {
     }
     Ticket splitTicket = new Ticket(ticket);
     // create ticket and move customers from old one
-    ticketUtils.saveToRepository(splitTicket);
+    ticketUtils.saveToRepository(splitTicket, "Split Ticket");
     // set SLA to earliest Customer’s SLA from the original Ticket
     splitTicket = moveTicketToReady(splitTicket.getId(), rootCause.getId());
     return splitTicket;
@@ -94,7 +94,7 @@ public class TicketService {
   public Ticket addCustomer(Long id, Long customerId){
     Ticket ticket = getTicketIfExist(id);
     customerService.attachCustomerToTicket(customerId, ticket, null);
-    ticket = ticketUtils.saveToRepository(ticket);
+    ticket = ticketUtils.saveToRepository(ticket, "Customer " + customerId + " was added to Ticket");
     return ticket;
   }
 
@@ -103,41 +103,22 @@ public class TicketService {
     return customerService.getCustomersByTicket(ticket);
   }
 
-    @Transactional
-  void saveReconciledTickets(Ticket ticket, Ticket readyTicket) {
-      ticketUtils.saveToRepository(readyTicket);
-      ticketUtils.saveToRepository(ticket);
-  }
 
   private Ticket getReadyTicket(Ticket ticket, Long rootCauseId) {
     RootCause rootCause = rootCauseService.getRootCauseIfExist(rootCauseId);
     Optional<Ticket> readyTicket = ticketRepository.findTicketByProviderAndRootCauseAndStatus(ticket.getProvider(), rootCause, Status.READY.toString());
-    //TODO  Move to TicketUtils
     if(readyTicket.isPresent() && Status.isReady(readyTicket.get().getStatus())){
-      reconcileTickets(ticket, readyTicket.get());
-      return readyTicket.get();
+       return ticketUtils.reconcileTickets(ticket, readyTicket.get());
     }
     return updateTicketStatusToReady(ticket, rootCause);
-  }
-
-  private void reconcileTickets(Ticket ticket, Ticket readyTicket) {
-    // TODO combine customers
-//    readyTicket.addCustomers(ticket.getCustomers());
-    readyTicket.addTags(ticket.getTags());
-    readyTicket.setLastModifiedDate(new Date());
-    // TODO combine description?
-    // TODO add comment for each ticket
-    ticket.setStatus(Status.RECONCILED.getStatus());
-    saveReconciledTickets(ticket, readyTicket);
   }
 
   private Ticket updateTicketStatusToReady(Ticket ticket, RootCause rootCause) {
     ticket.setStatus(Status.READY.getStatus());
     ticket.setRootCause(rootCause);
     ticket.setSla(3);
-    // TODO change date
     ticket.setSlaHour(new Date().getHours());
-    return ticketUtils.saveToRepository(ticket);
+    return ticketUtils.saveToRepository(ticket, "Status updated to Ready");
   }
 
 
