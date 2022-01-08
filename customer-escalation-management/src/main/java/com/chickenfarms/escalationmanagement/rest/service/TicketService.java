@@ -78,28 +78,26 @@ public class TicketService {
   public Ticket splitTicket(Long id, Long rootCauseId, Long customerId){
     Ticket ticket = getTicketIfExist(id);
     RootCause rootCause = rootCauseService.getRootCauseIfExist(rootCauseId);
-    if(Status.CLOSED.getStatus().equals(ticket.getStatus())){
+    if(Status.CLOSED.getStatus().equals(ticket.getStatus()) || Status.RECONCILED.getStatus().equals(ticket.getStatus())){
       throw new ChangeStatusException(Status.READY.getStatus(), "You tried to split " + ticket.getStatus() +
           " ticket,  it is allowed only for tickets with status 'Created'/'Ready'/'Reconciled'");
     }
     Ticket splitTicket = new Ticket(ticket);
+    splitTicket = ticketUtils.saveToRepository(splitTicket, "Split Ticket");
+    splitTicket = moveTicketToReady(splitTicket.getId(), rootCause.getId());
     if(customerId != null){
       Date addedDate = removeCustomer(ticket.getId(), customerId);
       customerService.attachCustomerToTicket(customerId,splitTicket, addedDate);
       splitTicket.increaseImpact();
       splitTicket.setSlaHour(addedDate.getHours());
+      ticketUtils.saveToRepository(ticket, "Customer added");
     }
-    ticketUtils.saveToRepository(splitTicket, "Split Ticket");
-    splitTicket = moveTicketToReady(splitTicket.getId(), rootCause.getId());
     return splitTicket;
   }
 
   public Ticket addCustomer(Long id, Long customerId){
     Ticket ticket = getTicketIfExist(id);
-    customerService.attachCustomerToTicket(customerId, ticket, null);
-    ticket.increaseImpact();
-    ticket = ticketUtils.saveToRepository(ticket, "Customer " + customerId + " was added to Ticket");
-    return ticket;
+    return ticketUtils.addCustomerToTicket(ticket,customerId);
   }
 
   public Date removeCustomer(Long id, Long customerId){

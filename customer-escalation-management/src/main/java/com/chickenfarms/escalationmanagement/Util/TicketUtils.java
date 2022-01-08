@@ -6,6 +6,8 @@ import com.chickenfarms.escalationmanagement.model.entity.Ticket;
 import com.chickenfarms.escalationmanagement.model.payload.PostCommentRequest;
 import com.chickenfarms.escalationmanagement.repository.TicketRepository;
 import com.chickenfarms.escalationmanagement.rest.service.CommentService;
+import com.chickenfarms.escalationmanagement.rest.service.CustomerService;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,7 @@ public class TicketUtils {
 
   private final TicketRepository ticketRepository;
   private final CommentService commentService;
+  private final CustomerService customerService;
 
   public Ticket saveToRepository(Ticket ticket, String comment) {
     ticket.setLastModifiedDate(new Date());
@@ -40,18 +43,25 @@ public class TicketUtils {
   }
 
   public Ticket reconcileTickets(Ticket ticketToReconcile, Ticket existingTicket) {
-    // TODO combine customers
-//    readyTicket.addCustomers(ticket.getCustomers());
+    ArrayList<Long> customers = customerService.getCustomersByTicket(ticketToReconcile);
+    customers.stream().forEach(customer -> addCustomerToTicket(existingTicket, customer));
     existingTicket.addTags(ticketToReconcile.getTags());
     existingTicket.setLastModifiedDate(new Date());
     ticketToReconcile.setStatus(Status.RECONCILED.getStatus());
-    saveReconciledTickets(ticketToReconcile, existingTicket);
-    return existingTicket;
+    ticketToReconcile.setRootCause(existingTicket.getRootCause());
+    return saveReconciledTickets(ticketToReconcile, existingTicket);
+  }
+
+  public Ticket addCustomerToTicket(Ticket ticket, Long customerId){
+    customerService.attachCustomerToTicket(customerId, ticket, null);
+    ticket.increaseImpact();
+    ticket = saveToRepository(ticket, "Customer " + customerId + " was added to Ticket");
+    return ticket;
   }
 
   @Transactional
-  void saveReconciledTickets(Ticket ticket, Ticket readyTicket) {
+  Ticket saveReconciledTickets(Ticket ticket, Ticket readyTicket) {
     saveToRepository(readyTicket, "Ticket number" + ticket.getId() + " was reconciled to this Ticket");
-    saveToRepository(ticket, "This Ticket was reconciled to Ticket number " + readyTicket.getId());
+    return saveToRepository(ticket, "This Ticket was reconciled to Ticket number " + readyTicket.getId());
   }
 }

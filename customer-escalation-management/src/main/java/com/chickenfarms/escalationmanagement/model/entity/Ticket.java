@@ -102,7 +102,7 @@ public class Ticket {
     createdBy = ticket.getCreatedBy();
     provider = ticket.getProvider();
     this.problem = ticket.getProblem();
-    status = ticket.getStatus();
+    status = Status.CREATED.getStatus();
     setTags(ticket.getTags());
     creationDate = new Date();
     lastModifiedDate = creationDate;

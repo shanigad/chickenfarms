@@ -13,6 +13,7 @@ import com.chickenfarms.escalationmanagement.rest.service.CustomerService;
 import com.chickenfarms.escalationmanagement.rest.service.TicketService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
@@ -51,6 +53,7 @@ public class SingelTicketController {
   }
 
   @PostMapping("/split/{rootCauseId}/{customerId}")
+  @ResponseStatus(HttpStatus.CREATED)
   public ResponsePayload splitTicket(@PathVariable Long id, @PathVariable Long rootCauseId,
                                      @PathVariable Long customerId){
     Ticket ticket = ticketService.splitTicket(id, rootCauseId, customerId);
@@ -64,11 +67,12 @@ public class SingelTicketController {
   }
 
   @PostMapping("/comment")
+  @ResponseStatus(HttpStatus.CREATED)
   public ResponsePayload postComment(@PathVariable Long id, @RequestBody
       PostCommentRequest postCommentRequest){
     Ticket ticket = ticketService.getTicketIfExist(id);
     Comment comment = commentService.postComment(postCommentRequest, ticket);
-     return new ResponsePayload("Posted comment " + comment + " to Ticket number " + id, comment);
+     return new ResponsePayload("Posted comment to Ticket", comment);
   }
 
   @PostMapping("/customer/{customerId}")
@@ -90,7 +94,7 @@ public class SingelTicketController {
   @PutMapping("")
   public ResponsePayload updateTicket(@PathVariable Long id
                              , @RequestBody TicketUpdateRequest ticketUpdateRequest){
-    return new ResponsePayload("Ticket number "+ id +" updated successfully",
+    return new ResponsePayload("Ticket updated successfully",
         new TicketResponse(ticketService.updateTicket(id, ticketUpdateRequest)));
   }
 

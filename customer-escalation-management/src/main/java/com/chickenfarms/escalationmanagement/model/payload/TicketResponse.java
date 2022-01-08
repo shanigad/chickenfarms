@@ -39,16 +39,10 @@ public class TicketResponse {
     this.status = ticket.getStatus();
     this.isResolved = ticket.isResolved();
     this.closedDate = ticket.getClosedDate();
-    this.problem = ticket.getProblem().getName();
     this.impact = ticket.getImpact();
-    this.rootCause = ticket.getProblem() == null?null:ticket.getProblem().getName();
+    this.problem = ticket.getProblem() == null?null:ticket.getProblem().getName();
     this.rootCause = ticket.getRootCause() == null?null:ticket.getRootCause().getName();
-    setTags(ticket.getTags());
-
-  }
-
-  private void setTags(Set<Tag> tags) {
-     tags.stream().forEach(tag -> this.tags.add(tag.getName()));
+    ticket.getTags().stream().forEach(tag -> this.tags.add(tag.getName()));
   }
 
 
