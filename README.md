@@ -24,7 +24,7 @@ docker-compose down --rmi all
 ```
 
 ## Data model 
-![](Data model.png)
+![](Data model.png)](Data model.png)
 
 
 ## Testing with Postman 
