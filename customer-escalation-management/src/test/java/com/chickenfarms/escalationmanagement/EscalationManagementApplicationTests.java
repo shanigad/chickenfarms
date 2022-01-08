@@ -103,8 +103,6 @@ class EscalationManagementApplicationTests {
         singelTicketUrl +ticketNumber, TicketResponse.class);
     assertEquals(OK, responseEntity.getStatusCode());
     assertEquals(ticketNumber, responseEntity.getBody().getTicketNumber());
-
-
   }
 
   @Test
@@ -172,9 +170,8 @@ class EscalationManagementApplicationTests {
     assertEquals("update description", ticketResponse.getDescription());
     assertEquals("General Error", ticketResponse.getProblem());
     assertEquals(ticketNumber, ticketResponse.getTicketNumber());
-
-
   }
+  
   @Test
   void shouldSplitTicket() throws Exception {
     Long[] customers = {123123L, 456456L};
