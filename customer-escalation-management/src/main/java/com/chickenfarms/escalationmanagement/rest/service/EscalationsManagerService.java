@@ -32,7 +32,8 @@ public class EscalationsManagerService {
   public Page<Ticket> getFilteredTickets(TicketFilterRequest ticketFilterRequest, int pageNum){
     String status = Status.getStatusOrNull(ticketFilterRequest.getStatus());
     Problem problem = problemService.getProblemOrNull(ticketFilterRequest.getProblem());
-    Page<Ticket> filteredTickets = ticketRepository.getAllByStatusAndProviderAndProblem(status, ticketFilterRequest.getProvider(), problem, PageRequest.of(pageNum, 5));
+    String provider = ticketFilterRequest.getProvider().equals("null")?null:ticketFilterRequest.getProvider();
+    Page<Ticket> filteredTickets = ticketRepository.getAllByStatusAndProviderAndProblem(status, provider, problem, PageRequest.of(pageNum, 5));
     return filteredTickets;
   }
 

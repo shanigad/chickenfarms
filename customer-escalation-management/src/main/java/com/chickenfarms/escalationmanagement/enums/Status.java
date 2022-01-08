@@ -45,7 +45,7 @@ public enum Status {
     return RECONCILED.getStatus().equals(status);
   }
 
-  public static String getStatusOrNull(Status status) {
-    return status != null ? status.getStatus() : null;
+  public static String getStatusOrNull(String status) {
+    return status.isEmpty()| status.equals("null")? null: fromValue(status).getStatus();
   }
 }
