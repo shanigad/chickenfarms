@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class EscalationsManagerController {
 
   private final EscalationsManagerService escalationsManagerService;
-  
+
   @GetMapping("/tickets/next")
   public ResponsePayload getNextTicket(){
     Ticket ticket = escalationsManagerService.getNextTicket();

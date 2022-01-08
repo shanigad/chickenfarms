@@ -16,7 +16,6 @@ import java.util.Date;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -76,17 +75,21 @@ public class TicketService {
     return ticket;
   }
 
-  public Ticket splitTicket(Long id, Long RootCauseId){
+  public Ticket splitTicket(Long id, Long rootCauseId, Long customerId){
     Ticket ticket = getTicketIfExist(id);
-    //check not the same root cause
-    RootCause rootCause = rootCauseService.getRootCauseIfExist(RootCauseId);
+    RootCause rootCause = rootCauseService.getRootCauseIfExist(rootCauseId);
     if(Status.CLOSED.getStatus().equals(ticket.getStatus())){
-      throw new ChangeStatusException(Status.READY.getStatus(), "You tried to split " + ticket.getStatus() + " ticket,  it is allowed only for tickets with status 'Created'/'Ready'/'Reconciled'");
+      throw new ChangeStatusException(Status.READY.getStatus(), "You tried to split " + ticket.getStatus() +
+          " ticket,  it is allowed only for tickets with status 'Created'/'Ready'/'Reconciled'");
     }
     Ticket splitTicket = new Ticket(ticket);
-    // create ticket and move customers from old one
+    if(customerId != null){
+      Date addedDate = removeCustomer(ticket.getId(), customerId);
+      customerService.attachCustomerToTicket(customerId,splitTicket, addedDate);
+      splitTicket.increaseImpact();
+      splitTicket.setSlaHour(addedDate.getHours());
+    }
     ticketUtils.saveToRepository(splitTicket, "Split Ticket");
-    // set SLA to earliest Customer’s SLA from the original Ticket
     splitTicket = moveTicketToReady(splitTicket.getId(), rootCause.getId());
     return splitTicket;
   }
@@ -94,8 +97,17 @@ public class TicketService {
   public Ticket addCustomer(Long id, Long customerId){
     Ticket ticket = getTicketIfExist(id);
     customerService.attachCustomerToTicket(customerId, ticket, null);
+    ticket.increaseImpact();
     ticket = ticketUtils.saveToRepository(ticket, "Customer " + customerId + " was added to Ticket");
     return ticket;
+  }
+
+  public Date removeCustomer(Long id, Long customerId){
+    Ticket ticket = getTicketIfExist(id);
+    Date date = customerService.removeCustomerFromTicket(customerId, ticket);
+    ticket.reduceImpact();
+    ticketUtils.saveToRepository(ticket, "Customer " + customerId + " was removed from Ticket");
+    return date;
   }
 
   public ArrayList<Long> getTicketCustomers(Long id){

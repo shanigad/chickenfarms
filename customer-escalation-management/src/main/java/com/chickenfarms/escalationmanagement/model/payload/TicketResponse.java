@@ -27,6 +27,7 @@ public class TicketResponse {
   private boolean isResolved;
   private Date closedDate;
   private Set<String> tags =  new HashSet<>();
+  private int impact;
 
   public TicketResponse(Ticket ticket) {
     if(ticket == null) return;
@@ -39,9 +40,11 @@ public class TicketResponse {
     this.isResolved = ticket.isResolved();
     this.closedDate = ticket.getClosedDate();
     this.problem = ticket.getProblem().getName();
+    this.impact = ticket.getImpact();
     this.rootCause = ticket.getProblem() == null?null:ticket.getProblem().getName();
     this.rootCause = ticket.getRootCause() == null?null:ticket.getRootCause().getName();
     setTags(ticket.getTags());
+
   }
 
   private void setTags(Set<Tag> tags) {

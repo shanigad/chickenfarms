@@ -50,9 +50,10 @@ public class SingelTicketController {
     return commentService.getTicketComments(ticket,page);
   }
 
-  @PostMapping("/split/{rootCauseId}")
-  public ResponsePayload splitTicket(@PathVariable Long id, @PathVariable Long rootCauseId){
-    Ticket ticket = ticketService.splitTicket(id, rootCauseId);
+  @PostMapping("/split/{rootCauseId}/{customerId}")
+  public ResponsePayload splitTicket(@PathVariable Long id, @PathVariable Long rootCauseId,
+                                     @PathVariable Long customerId){
+    Ticket ticket = ticketService.splitTicket(id, rootCauseId, customerId);
     return new ResponsePayload("Ticket number " + id + " successfully split to Ticket number " + ticket.getId(), new TicketResponse(ticket));
   }
 
@@ -74,6 +75,14 @@ public class SingelTicketController {
   public ResponsePayload addCustomer(@PathVariable Long id, @PathVariable Long customerId){
     ResponsePayload responsePayload = new ResponsePayload("Customer added successfully",
         new TicketResponse(ticketService.addCustomer(id, customerId)));
+    responsePayload.addToContext(ticketService.getTicketCustomers(id));
+    return responsePayload;
+  }
+
+  @PutMapping("/customer/{customerId}")
+  public ResponsePayload removeCustomer(@PathVariable Long id, @PathVariable Long customerId){
+    ResponsePayload responsePayload = new ResponsePayload("Customer removed successfully",
+        ticketService.removeCustomer(id, customerId));
     responsePayload.addToContext(ticketService.getTicketCustomers(id));
     return responsePayload;
   }

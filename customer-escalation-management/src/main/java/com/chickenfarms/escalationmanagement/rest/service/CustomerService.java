@@ -6,6 +6,7 @@ import com.chickenfarms.escalationmanagement.model.entity.Ticket;
 import com.chickenfarms.escalationmanagement.repository.CustomerTicketRepository;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,8 +34,15 @@ public class CustomerService {
     customerTicketRepository.save(customerTicket);
   }
 
+  public Date removeCustomerFromTicket(Long customerId, Ticket ticket){
+   CustomerTicket customerTicket = customerTicketRepository.findCustomerTicketByTicketAndCustomerId(ticket, customerId)
+        .orElseThrow(()-> new ResourceNotFoundException("CustomerTicket", "Ticket number and customer id", ticket.getId() + ", "+ customerId));
+   customerTicketRepository.deleteByTicketAndCustomerId(ticket, customerId);
+   return customerTicket.getAddedDate();
+  }
+
+
   public ArrayList<Long> getCustomersByTicket(Ticket ticket){
-//    List<CustomerTicket> customers = ticket.getCustomers();
     ArrayList<Long> customers = new ArrayList<>();
     customerTicketRepository.findCustomerTicketByTicket(ticket).forEach(
         customerTicket -> customers.add(customerTicket.getCustomerId()));

@@ -19,6 +19,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.Min;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -47,6 +48,9 @@ public class Ticket {
   private Date lastModifiedDate;
   @Column(name = "status")
   private String status;
+  @Column(name = "impact")
+  @Min(value=0)
+  private int impact;
   @Column(name = "closed_date")
   private Date closedDate;
   @Column(name = "is_resolved")
@@ -59,18 +63,20 @@ public class Ticket {
   private boolean isOomlette;
   @Column(name = "grade")
   private int grade;
+
   @ManyToOne
   @JoinColumn(name="problem_id")
   private Problem problem;
+
 
   @ManyToOne
   @JoinColumn(name="rc_id")
   private RootCause rootCause;
 
-  @OneToMany(mappedBy = "customerId",
-      cascade = CascadeType.ALL,
-      orphanRemoval = true)
-  private Set<CustomerTicket> customers = new HashSet<>();
+//  @OneToMany(mappedBy = "customerId",
+//      cascade = CascadeType.ALL,
+//      orphanRemoval = true)
+//  private Set<CustomerTicket> customers = new HashSet<>();
 
   @ManyToMany
   @JoinTable(name = "tags_on_tickets",
@@ -88,6 +94,7 @@ public class Ticket {
     lastModifiedDate = creationDate;
     isResolved = false;
     isOomlette = false;
+    impact = createdTicket.getCustomers().length;
   }
 
   public Ticket(Ticket ticket) {
@@ -99,40 +106,29 @@ public class Ticket {
     setTags(ticket.getTags());
     creationDate = new Date();
     lastModifiedDate = creationDate;
-    isResolved = false;
-//    isOomlette = false;
+    isResolved = ticket.isResolved();
+    isOomlette = ticket.isOomlette();
+    sla = ticket.getSla();
   }
-
-
 
   public void setTags(Set<Tag> tags) {
     tags.stream().forEach(tag -> this.tags.add(tag));
   }
-
-  public void setCustomers(Set<CustomerTicket> customers) {
-    customers.stream().forEach(c -> this.customers.add(c));
-  }
-
   public void addTag(Tag tag){
     tags.add(tag);
   }
-
   public void addTags(Set<Tag> tags){
     this.tags.addAll(tags);
   }
-
-  public void addCustomer(CustomerTicket customer){
-    customers.add(customer);
-  }
-
-//  public void addCustomers(Set<CustomerTicket> customers){
-//    this.customers.addAll(customers);
-//  }
-
   public void slaTicking(){
     sla =-1;
   }
-
+  public void reduceImpact(){
+    impact -=1;
+}
+  public void increaseImpact(){
+    impact +=1;
+}
 
 
 
